@@ -100,6 +100,7 @@ public class FourQuarterQuizView extends AbsQuizView<FourQuarterQuizQuestion> {
 
     @Override
     protected boolean isAnswerCorrect() {
+        getQuiz().setSelectedAnswer(new int[]{mAnswered});
         return getQuiz().isAnswerCorrect(new int[]{mAnswered});
     }
 }

@@ -362,17 +362,14 @@ public class QuizActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this,
                     this.quiz.getTheme().getPrimaryDarkColor()));
         }
-        initLayout(this.quiz.getId());
+        initLayout();
         initToolbar(this.quiz);
     }
 
-    private void initLayout(String categoryId) {
+    private void initLayout() {
         setContentView(R.layout.activity_quiz);
         //noinspection PrivateResource
         icon = (ImageView) findViewById(R.id.icon);
-        // TODO quiz image?
-//        int resId = getResources().getIdentifier(IMAGE_CATEGORY + categoryId, DRAWABLE, getApplicationContext().getPackageName());
-//        icon.setImageResource(resId);
         ViewCompat.animate(icon)
                 .scaleX(1)
                 .scaleY(1)

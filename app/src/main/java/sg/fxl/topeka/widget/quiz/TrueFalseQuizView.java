@@ -24,8 +24,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.TrueFalseQuizQuestion;
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Quiz;
+import sg.fxl.topekaport.R;
 
 @SuppressLint("ViewConstructor")
 public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuizQuestion> {
@@ -75,6 +76,7 @@ public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuizQuestion> {
 
     @Override
     protected boolean isAnswerCorrect() {
+        getQuiz().setSelectedAnswer(mAnswer);
         return getQuiz().isAnswerCorrect(mAnswer);
     }
 

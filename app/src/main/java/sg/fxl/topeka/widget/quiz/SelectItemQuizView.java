@@ -68,6 +68,7 @@ public class SelectItemQuizView extends AbsQuizView<SelectItemQuizQuestion> {
     protected boolean isAnswerCorrect() {
         final SparseBooleanArray checkedItemPositions = mListView.getCheckedItemPositions();
         final int[] answer = getQuiz().getAnswer();
+        getQuiz().setSelectedAnswer(AnswerHelper.getSelectedIndexes(checkedItemPositions));
         return AnswerHelper.isAnswerCorrect(checkedItemPositions, answer);
     }
 

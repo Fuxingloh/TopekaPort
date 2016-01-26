@@ -24,11 +24,12 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Quiz;
-import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
-
 import java.util.Arrays;
 import java.util.List;
+
+import sg.fxl.topeka.model.Quiz;
+import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
+import sg.fxl.topekaport.R;
 
 @SuppressLint("ViewConstructor")
 public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuizQuestion> {
@@ -73,6 +74,7 @@ public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuizQuestion> {
 
     @Override
     protected boolean isAnswerCorrect() {
+        getQuiz().setSelectedAnswer(mCurrentSelection.getText().toString());
         return getQuiz().isAnswerCorrect(mCurrentSelection.getText().toString());
     }
 

@@ -106,6 +106,7 @@ public class FillBlankQuizView extends TextInputQuizView<FillBlankQuizQuestion> 
 
     @Override
     protected boolean isAnswerCorrect() {
+        getQuiz().setSelectedAnswer(mAnswerView.getText().toString());
         return getQuiz().isAnswerCorrect(mAnswerView.getText().toString());
     }
 }

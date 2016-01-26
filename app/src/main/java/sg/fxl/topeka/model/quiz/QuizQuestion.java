@@ -29,6 +29,7 @@ public abstract class QuizQuestion<A>{
     private String question;
     private String quizType;
     private A answer;
+    private A selectedAnswer;
     /**
      * Flag indicating whether this quiz has already been solved.
      * It does not give information whether the solution was correct or not.
@@ -62,6 +63,14 @@ public abstract class QuizQuestion<A>{
 
     protected void setAnswer(A answer) {
         this.answer = answer;
+    }
+
+    public A getSelectedAnswer() {
+        return selectedAnswer;
+    }
+
+    public void setSelectedAnswer(A selectedAnswer) {
+        this.selectedAnswer = selectedAnswer;
     }
 
     public boolean isAnswerCorrect(A answer) {

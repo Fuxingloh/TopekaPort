@@ -62,6 +62,7 @@ public class MultiSelectQuizView extends AbsQuizView<MultiSelectQuizQuestion> {
     protected boolean isAnswerCorrect() {
         final SparseBooleanArray checkedItemPositions = mListView.getCheckedItemPositions();
         final int[] answer = getQuiz().getAnswer();
+        getQuiz().setSelectedAnswer(AnswerHelper.getSelectedIndexes(checkedItemPositions));
         return AnswerHelper.isAnswerCorrect(checkedItemPositions, answer);
     }
 

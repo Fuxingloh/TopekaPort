@@ -19,6 +19,11 @@ package sg.fxl.topeka.helper;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Collection of methods to convert answers to human readable forms.
  */
@@ -85,6 +90,18 @@ public class AnswerHelper {
             }
         }
         return checkedItems.size() == answerIds.length;
+    }
+
+    public static int[] getSelectedIndexes(SparseBooleanArray checkedItems){
+        List<Integer> selectedIndexes = new ArrayList<>();
+        if (checkedItems != null) {
+            for (int i=0; i<checkedItems.size(); i++) {
+                if (checkedItems.valueAt(i)) {
+                    selectedIndexes.add(checkedItems.keyAt(i));
+                }
+            }
+        }
+        return ArrayUtils.toPrimitive(selectedIndexes.toArray(new Integer[selectedIndexes.size()]));
     }
 
 }

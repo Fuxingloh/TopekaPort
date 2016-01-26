@@ -8,13 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import java.util.Collections;
-
-import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.CategoryJson;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.Theme;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
-import sg.fxl.topeka.model.quiz.SelectItemQuizQuestion;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,9 +39,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void startQuiz(){
         // Create Quiz Question & Quiz
-        QuizQuestion quizQuestion = new SelectItemQuizQuestion("Sample Question", new int[]{0},
-                new String[]{"Option 1", "Option 2", "Option 3", "Option 4"}, false);
-        quiz = new Quiz("Quiz", "quiz", Theme.yellow, Collections.singletonList(quizQuestion), false);
+        quiz = new QuizBuilder()
+                .name("Sample Quiz")
+                .theme(Theme.yellow)
+                .addSelectQuestion("Sample Questions 1", new int[]{0}, new String[]{"Option 1", "Option 2", "Option 3", "Option 4"})
+                .addFillBlankQuestion("Sample Questions 2", "Answer")
+                .addPickerQuestion("Sample Question 3", 5, 1, 10, 1)
+                .create();
 
         // Send it through json with intent
         Intent intent = new Intent(this, QuizActivity.class);
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == R.id.solved) {
             Quiz quiz = CategoryJson.from(intent);
             for (QuizQuestion quizQuestion : quiz.getQuizzes()) {
-                Log.d("Result", quizQuestion.getAnswer().toString());
+                Log.d("Result", quizQuestion.getSelectedAnswer().toString());
             }
         }
     }

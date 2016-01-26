@@ -115,8 +115,7 @@ public class QuizFragment extends android.support.v4.app.Fragment {
         if (!isAdded()) {
             return;
         }
-        progressText
-                .setText(getString(R.string.quiz_of_quizzes, currentQuizPosition, quizSize));
+        progressText.setText(getString(R.string.quiz_of_quizzes, currentQuizPosition, quizSize));
         progressBar.setProgress(currentQuizPosition);
     }
 

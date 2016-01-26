@@ -18,27 +18,27 @@ package sg.fxl.topeka.model.quiz;
 
 public final class PickerQuizQuestion extends QuizQuestion<Integer> {
 
-    private final int mMin;
-    private final int mMax;
-    private final int mStep;
+    private final int min;
+    private final int max;
+    private final int step;
 
     public PickerQuizQuestion(String question, Integer answer, int min, int max, int step, boolean solved) {
         super(question, answer, solved);
-        mMin = min;
-        mMax = max;
-        mStep = step;
+        this.min = min;
+        this.max = max;
+        this.step = step;
     }
 
     public int getMin() {
-        return mMin;
+        return min;
     }
 
     public int getMax() {
-        return mMax;
+        return max;
     }
 
     public int getStep() {
-        return mStep;
+        return step;
     }
 
     @Override
@@ -66,23 +66,23 @@ public final class PickerQuizQuestion extends QuizQuestion<Integer> {
 
         PickerQuizQuestion that = (PickerQuizQuestion) o;
 
-        if (mMin != that.mMin) {
+        if (min != that.min) {
             return false;
         }
         //noinspection SimplifiableIfStatement
-        if (mMax != that.mMax) {
+        if (max != that.max) {
             return false;
         }
-        return mStep == that.mStep;
+        return step == that.step;
 
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + mMin;
-        result = 31 * result + mMax;
-        result = 31 * result + mStep;
+        result = 31 * result + min;
+        result = 31 * result + max;
+        result = 31 * result + step;
         return result;
     }
 }

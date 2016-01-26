@@ -79,7 +79,9 @@ public class FillTwoBlanksQuizView extends TextInputQuizView<FillTwoBlanksQuizQu
     protected boolean isAnswerCorrect() {
         String partOne = getAnswerFrom(mAnswerOne);
         String partTwo = getAnswerFrom(mAnswerTwo);
-        return getQuiz().isAnswerCorrect(new String[]{partOne, partTwo});
+        String[] selectedAnswers = new String[]{partOne, partTwo};
+        getQuiz().setSelectedAnswer(selectedAnswers);
+        return getQuiz().isAnswerCorrect(selectedAnswers);
     }
 
     private String getAnswerFrom(EditText view) {

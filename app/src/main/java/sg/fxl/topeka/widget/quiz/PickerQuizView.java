@@ -80,6 +80,7 @@ public final class PickerQuizView extends AbsQuizView<PickerQuizQuestion> {
 
     @Override
     protected boolean isAnswerCorrect() {
+        getQuiz().setSelectedAnswer(mProgress);
         return getQuiz().isAnswerCorrect(mProgress);
     }
 
