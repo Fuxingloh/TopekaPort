@@ -47,58 +47,60 @@ import sg.fxl.topeka.widget.quiz.PickerQuizView;
 import sg.fxl.topeka.widget.quiz.SelectItemQuizView;
 import sg.fxl.topeka.widget.quiz.ToggleTranslateQuizView;
 import sg.fxl.topeka.widget.quiz.TrueFalseQuizView;
+import sg.fxl.topekaport.QuizSetting;
 
 /**
  * Adapter to display quizzes.
  */
 public class QuizAdapter extends BaseAdapter {
 
-    private final Context mContext;
-    private final List<QuizQuestion> mQuizzes;
-    private final Quiz mQuiz;
-    private final int mViewTypeCount;
-    private List<String> mQuizTypes;
+    private final Context context;
+    private final List<QuizQuestion> quizzes;
+    private final Quiz quiz;
+    private final QuizSetting quizSetting;
+    private final int viewTypeCount;
+    private List<String> quizTypes;
 
-    public QuizAdapter(Context context, Quiz quiz) {
-        mContext = context;
-        mQuiz = quiz;
-        mQuizzes = quiz.getQuizzes();
-        mViewTypeCount = calculateViewTypeCount();
-
+    public QuizAdapter(Context context, Quiz quiz, QuizSetting quizSetting) {
+        this.context = context;
+        this.quiz = quiz;
+        this.quizzes = quiz.getQuizzes();
+        this.viewTypeCount = calculateViewTypeCount();
+        this.quizSetting = quizSetting;
     }
 
     private int calculateViewTypeCount() {
         Set<String> tmpTypes = new HashSet<>();
-        for (int i = 0; i < mQuizzes.size(); i++) {
-            tmpTypes.add(mQuizzes.get(i).getType().getJsonName());
+        for (int i = 0; i < quizzes.size(); i++) {
+            tmpTypes.add(quizzes.get(i).getType().getJsonName());
         }
-        mQuizTypes = new ArrayList<>(tmpTypes);
-        return mQuizTypes.size();
+        quizTypes = new ArrayList<>(tmpTypes);
+        return quizTypes.size();
     }
 
     @Override
     public int getCount() {
-        return mQuizzes.size();
+        return quizzes.size();
     }
 
     @Override
     public QuizQuestion getItem(int position) {
-        return mQuizzes.get(position);
+        return quizzes.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return mQuizzes.get(position).getId();
+        return quizzes.get(position).getId();
     }
 
     @Override
     public int getViewTypeCount() {
-        return mViewTypeCount;
+        return viewTypeCount;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mQuizTypes.indexOf(getItem(position).getType().getJsonName());
+        return quizTypes.indexOf(getItem(position).getType().getJsonName());
     }
 
     @Override
@@ -110,7 +112,8 @@ public class QuizAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final QuizQuestion quizQuestion = getItem(position);
         if (convertView instanceof AbsQuizView) {
-            if (((AbsQuizView) convertView).getQuiz().equals(quizQuestion)) {
+            AbsQuizView absQuizView = (AbsQuizView) convertView;
+            if (absQuizView.getQuiz().equals(quizQuestion)) {
                 return convertView;
             }
         }
@@ -122,31 +125,33 @@ public class QuizAdapter extends BaseAdapter {
         if (null == quizQuestion) {
             throw new IllegalArgumentException("QuizQuestion must not be null");
         }
-        return createViewFor(quizQuestion);
+        AbsQuizView absQuizView = createViewFor(quizQuestion);
+        absQuizView.setQuizSetting(quizSetting);
+        return absQuizView;
     }
 
     private AbsQuizView createViewFor(QuizQuestion quizQuestion) {
         switch (quizQuestion.getType()) {
             case ALPHA_PICKER:
-                return new AlphaPickerQuizView(mContext, mQuiz, (AlphaPickerQuizQuestion) quizQuestion);
+                return new AlphaPickerQuizView(context, quiz, (AlphaPickerQuizQuestion) quizQuestion);
             case FILL_BLANK:
-                return new FillBlankQuizView(mContext, mQuiz, (FillBlankQuizQuestion) quizQuestion);
+                return new FillBlankQuizView(context, quiz, (FillBlankQuizQuestion) quizQuestion);
             case FILL_TWO_BLANKS:
-                return new FillTwoBlanksQuizView(mContext, mQuiz, (FillTwoBlanksQuizQuestion) quizQuestion);
+                return new FillTwoBlanksQuizView(context, quiz, (FillTwoBlanksQuizQuestion) quizQuestion);
             case FOUR_QUARTER:
-                return new FourQuarterQuizView(mContext, mQuiz, (FourQuarterQuizQuestion) quizQuestion);
+                return new FourQuarterQuizView(context, quiz, (FourQuarterQuizQuestion) quizQuestion);
             case MULTI_SELECT:
-                return new MultiSelectQuizView(mContext, mQuiz, (MultiSelectQuizQuestion) quizQuestion);
+                return new MultiSelectQuizView(context, quiz, (MultiSelectQuizQuestion) quizQuestion);
             case PICKER:
-                return new PickerQuizView(mContext, mQuiz, (PickerQuizQuestion) quizQuestion);
+                return new PickerQuizView(context, quiz, (PickerQuizQuestion) quizQuestion);
             case SINGLE_SELECT:
             case SINGLE_SELECT_ITEM:
-                return new SelectItemQuizView(mContext, mQuiz, (SelectItemQuizQuestion) quizQuestion);
+                return new SelectItemQuizView(context, quiz, (SelectItemQuizQuestion) quizQuestion);
             case TOGGLE_TRANSLATE:
-                return new ToggleTranslateQuizView(mContext, mQuiz,
+                return new ToggleTranslateQuizView(context, quiz,
                         (ToggleTranslateQuizQuestion) quizQuestion);
             case TRUE_FALSE:
-                return new TrueFalseQuizView(mContext, mQuiz, (TrueFalseQuizQuestion) quizQuestion);
+                return new TrueFalseQuizView(context, quiz, (TrueFalseQuizQuestion) quizQuestion);
         }
         throw new UnsupportedOperationException(
                 "QuizQuestion of type " + quizQuestion.getType() + " can not be displayed.");

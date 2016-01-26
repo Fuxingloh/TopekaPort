@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Start the quiz
      */
-    public void startQuiz(){
+    public void startQuiz() {
         // Create Quiz Question & Quiz
         quiz = new QuizBuilder()
                 .name("Sample Quiz")
@@ -47,17 +47,25 @@ public class MainActivity extends AppCompatActivity {
                 .addPickerQuestion("Sample Question 3", 5, 1, 10, 1)
                 .create();
 
+        // Setup Quiz Setting
+        QuizSetting quizSetting = new QuizSetting();
+        quizSetting.showStartScreen = false;
+        quizSetting.showEndScreen = false;
+        quizSetting.showTrueAnimationOnly = true;
+
         // Send it through json with intent
         Intent intent = new Intent(this, QuizActivity.class);
         CategoryJson.to(intent, quiz);
+        QuizSetting.Json.to(intent, quizSetting);
         ActivityCompat.startActivityForResult(this, intent, REQUEST_CATEGORY, null);
     }
 
     /**
      * On QuizQuestion end
+     *
      * @param requestCode requestCode
-     * @param resultCode resultCode
-     * @param intent data
+     * @param resultCode  resultCode
+     * @param intent      data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

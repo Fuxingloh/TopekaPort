@@ -52,12 +52,13 @@ public class QuizFragment extends android.support.v4.app.Fragment {
     private int quizSize;
     private ProgressBar progressBar;
     private Quiz quiz;
+    private QuizSetting quizSetting;
     private AdapterViewAnimator quizView;
     private ScoreAdapter scoreAdapter;
     private QuizAdapter quizAdapter;
     private SolvedStateListener solvedStateListener;
 
-    public static QuizFragment newInstance(Quiz quiz, SolvedStateListener solvedStateListener) {
+    public static QuizFragment newInstance(Quiz quiz, QuizSetting quizSetting, SolvedStateListener solvedStateListener) {
         if (quiz == null) {
             throw new IllegalArgumentException("The quiz can not be null");
         }
@@ -66,6 +67,7 @@ public class QuizFragment extends android.support.v4.app.Fragment {
             fragment.solvedStateListener = solvedStateListener;
         }
         fragment.quiz = quiz;
+        fragment.quizSetting = quizSetting;
         return fragment;
     }
 
@@ -186,7 +188,7 @@ public class QuizFragment extends android.support.v4.app.Fragment {
 
     private QuizAdapter getQuizAdapter() {
         if (null == quizAdapter) {
-            quizAdapter = new QuizAdapter(getActivity(), quiz);
+            quizAdapter = new QuizAdapter(getActivity(), quiz, quizSetting);
         }
         return quizAdapter;
     }
@@ -228,8 +230,8 @@ public class QuizFragment extends android.support.v4.app.Fragment {
     public void setSolvedStateListener(SolvedStateListener solvedStateListener) {
         this.solvedStateListener = solvedStateListener;
         if (quiz.isSolved() && null != this.solvedStateListener) {
-                this.solvedStateListener.onCategorySolved();
-            }
+            this.solvedStateListener.onCategorySolved();
+        }
     }
 
     private ScoreAdapter getScoreAdapter() {

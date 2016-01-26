@@ -46,6 +46,7 @@ import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topeka.widget.fab.CheckableFab;
 import sg.fxl.topekaport.QuizActivity;
+import sg.fxl.topekaport.QuizSetting;
 import sg.fxl.topekaport.R;
 
 /**
@@ -78,6 +79,7 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
     private CheckableFab submitAnswer;
     private Runnable hideFabRunnable;
     private Runnable moveOffScreenRunnable;
+    private QuizSetting quizSetting;
 
     /**
      * Enables creation of views for quizzes.
@@ -188,6 +190,10 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
         return submitAnswer;
     }
 
+    public void setQuizSetting(QuizSetting quizSetting) {
+        this.quizSetting = quizSetting;
+    }
+
     private void setDefaultPadding(View view) {
         view.setPadding(spacingDouble, spacingDouble, spacingDouble, spacingDouble);
     }
@@ -281,8 +287,14 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
      */
     private void performScoreAnimation(final boolean answerCorrect) {
         // Decide which background color to use.
-        final int backgroundColor = ContextCompat.getColor(getContext(),
-                answerCorrect ? R.color.green : R.color.red);
+        final int backgroundColor;
+        if (!quizSetting.showTrueAnimationOnly) {
+            backgroundColor = ContextCompat.getColor(getContext(),
+                    answerCorrect ? R.color.green : R.color.red);
+        } else {
+            backgroundColor = ContextCompat.getColor(getContext(), R.color.green);
+        }
+
         adjustFab(answerCorrect, backgroundColor);
         resizeView();
         moveViewOffScreen(answerCorrect);

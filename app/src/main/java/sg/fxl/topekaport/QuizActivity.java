@@ -67,6 +67,7 @@ public class QuizActivity extends AppCompatActivity {
     private Animator circularReveal;
     private ObjectAnimator colorChange;
     private View toolbarBack;
+    private QuizSetting quizSetting;
 
     final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -95,6 +96,12 @@ public class QuizActivity extends AppCompatActivity {
         interpolator = new FastOutSlowInInterpolator();
         if (null != savedInstanceState) {
             savedStateIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
+        }
+        // If quiz settings not given, default will be used.
+        if (getIntent().hasExtra(QuizSetting.TAG)) {
+            this.quizSetting = QuizSetting.Json.from(getIntent());
+        }else{
+            this.quizSetting = new QuizSetting();
         }
         super.onCreate(savedInstanceState);
         populate(CategoryJson.from(getIntent()));
@@ -130,6 +137,22 @@ public class QuizActivity extends AppCompatActivity {
                                 .alpha(1f);
                     }
                 });
+
+        // Jump to first question, skip introduction page
+        if (!quizSetting.showStartScreen) {
+            initQuizFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.quiz_fragment_container, quizFragment, FRAGMENT_TAG)
+                    .commit();
+            final FrameLayout container = (FrameLayout) findViewById(R.id.quiz_fragment_container);
+            container.setBackgroundColor(ContextCompat.
+                    getColor(this, quiz.getTheme().getWindowBackgroundColor()));
+            container.setVisibility(View.VISIBLE);
+            quizFab.setVisibility(View.GONE);
+            icon.setVisibility(View.GONE);
+            // the toolbar should not have more elevation than the content while playing
+            setToolbarElevation(false);
+        }
     }
 
     @Override
@@ -282,7 +305,7 @@ public class QuizActivity extends AppCompatActivity {
         if (quizFragment != null) {
             return;
         }
-        quizFragment = QuizFragment.newInstance(quiz, getSolvedStateListener());
+        quizFragment = QuizFragment.newInstance(quiz, quizSetting, getSolvedStateListener());
         setToolbarElevation(false);
     }
 
@@ -346,8 +369,13 @@ public class QuizActivity extends AppCompatActivity {
 
     private void submitAnswer() {
         if (!quizFragment.showNextPage()) {
-            quizFragment.showSummary();
             setResultSolved();
+            if (!quizSetting.showEndScreen){
+                // Don't show end screen. end activity straight away
+                onBackPressed();
+            }else{
+                quizFragment.showSummary();
+            }
             return;
         }
         setToolbarElevation(false);
