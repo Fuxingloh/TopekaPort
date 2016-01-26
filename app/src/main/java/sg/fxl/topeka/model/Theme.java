@@ -22,7 +22,7 @@ import android.support.annotation.StyleRes;
 import sg.fxl.topekaport.R;
 /**
  * A way to make simple changes to the application's appearance at runtime in correlation to its
- * {@link Category}.
+ * {@link Quiz}.
  *
  * Usually this should be done via attributes and {@link android.view.ContextThemeWrapper}s.
  * In one case in Topeka it is more performant to work like this.
@@ -49,51 +49,51 @@ public enum Theme {
             R.color.theme_yellow_background, R.color.theme_yellow_text,
             R.color.theme_yellow_accent, R.style.Topeka_Yellow);
 
-    private final int mColorPrimaryId;
-    private final int mWindowBackgroundColorId;
-    private final int mColorPrimaryDarkId;
-    private final int mTextColorPrimaryId;
-    private final int mAccentColorId;
-    private final int mStyleId;
+    private final int colorPrimaryId;
+    private final int windowBackgroundColorId;
+    private final int colorPrimaryDarkId;
+    private final int textColorPrimaryId;
+    private final int accentColorId;
+    private final int styleId;
 
     Theme(final int colorPrimaryId, final int colorPrimaryDarkId,
             final int windowBackgroundColorId, final int textColorPrimaryId,
             final int accentColorId, final int styleId) {
-        mColorPrimaryId = colorPrimaryId;
-        mWindowBackgroundColorId = windowBackgroundColorId;
-        mColorPrimaryDarkId = colorPrimaryDarkId;
-        mTextColorPrimaryId = textColorPrimaryId;
-        mAccentColorId = accentColorId;
-        mStyleId = styleId;
+        this.colorPrimaryId = colorPrimaryId;
+        this.windowBackgroundColorId = windowBackgroundColorId;
+        this.colorPrimaryDarkId = colorPrimaryDarkId;
+        this.textColorPrimaryId = textColorPrimaryId;
+        this.accentColorId = accentColorId;
+        this.styleId = styleId;
     }
 
     @ColorRes
     public int getTextPrimaryColor() {
-        return mTextColorPrimaryId;
+        return textColorPrimaryId;
     }
 
     @ColorRes
     public int getWindowBackgroundColor() {
-        return mWindowBackgroundColorId;
+        return windowBackgroundColorId;
     }
 
     @ColorRes
     public int getPrimaryColor() {
-        return mColorPrimaryId;
+        return colorPrimaryId;
     }
 
     @ColorRes
     public int getAccentColor() {
-        return mAccentColorId;
+        return accentColorId;
     }
 
     @ColorRes
     public int getPrimaryDarkColor() {
-        return mColorPrimaryDarkId;
+        return colorPrimaryDarkId;
     }
 
     @StyleRes
     public int getStyleId() {
-        return mStyleId;
+        return styleId;
     }
 }

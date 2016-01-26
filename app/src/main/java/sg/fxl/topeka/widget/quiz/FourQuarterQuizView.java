@@ -26,7 +26,7 @@ import android.widget.GridView;
 
 import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.ApiLevelHelper;
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.FourQuarterQuizQuestion;
 
 import sg.fxl.topekaport.R;
@@ -38,7 +38,7 @@ public class FourQuarterQuizView extends AbsQuizView<FourQuarterQuizQuestion> {
     private int mAnswered = -1;
     private GridView mAnswerView;
 
-    public FourQuarterQuizView(Context context, Category category, FourQuarterQuizQuestion quiz) {
+    public FourQuarterQuizView(Context context, Quiz category, FourQuarterQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

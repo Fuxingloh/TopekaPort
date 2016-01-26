@@ -28,9 +28,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.FloatingActionButton;
-import android.support.test.espresso.contrib.CountingIdlingResource;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -38,7 +36,6 @@ import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
@@ -47,36 +44,31 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.List;
 
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.helper.ViewUtils;
-import sg.fxl.topeka.model.Category;
 import sg.fxl.topeka.model.CategoryJson;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.widget.TextSharedElementCallback;
-
-import static sg.fxl.topeka.adapter.CategoryAdapter.DRAWABLE;
 
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
-    private static final String IMAGE_CATEGORY = "image_category_";
     private static final String STATE_IS_PLAYING = "isPlaying";
     private static final String FRAGMENT_TAG = "QuizQuestion";
 
-    private Interpolator mInterpolator;
-    private Category mCategory;
-    private QuizFragment mQuizFragment;
-    private FloatingActionButton mQuizFab;
-    private boolean mSavedStateIsPlaying;
-    private ImageView mIcon;
-    private Animator mCircularReveal;
-    private ObjectAnimator mColorChange;
-    private CountingIdlingResource mCountingIdlingResource;
-    private View mToolbarBack;
+    private Interpolator interpolator;
+    private Quiz quiz;
+    private QuizFragment quizFragment;
+    private FloatingActionButton quizFab;
+    private boolean savedStateIsPlaying;
+    private ImageView icon;
+    private Animator circularReveal;
+    private ObjectAnimator colorChange;
+    private View toolbarBack;
 
-    final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+    final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
             switch (v.getId()) {
@@ -100,17 +92,12 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mCountingIdlingResource = new CountingIdlingResource("QuizQuestion");
-        mInterpolator = new FastOutSlowInInterpolator();
+        interpolator = new FastOutSlowInInterpolator();
         if (null != savedInstanceState) {
-            mSavedStateIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
+            savedStateIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
         }
         super.onCreate(savedInstanceState);
-        try {
-            populate(CategoryJson.from(getIntent()));
-        } catch (IOException exception) {
-            Log.e(TAG, exception.getMessage(), exception);
-        }
+        populate(CategoryJson.from(getIntent()));
         int categoryNameTextSize = getResources()
                 .getDimensionPixelSize(R.dimen.category_item_text_size);
         int paddingStart = getResources().getDimensionPixelSize(R.dimen.spacing_double);
@@ -124,8 +111,8 @@ public class QuizActivity extends AppCompatActivity {
                         super.onSharedElementStart(sharedElementNames,
                                 sharedElements,
                                 sharedElementSnapshots);
-                        mToolbarBack.setScaleX(0f);
-                        mToolbarBack.setScaleY(0f);
+                        toolbarBack.setScaleX(0f);
+                        toolbarBack.setScaleY(0f);
                     }
 
                     @Override
@@ -136,7 +123,7 @@ public class QuizActivity extends AppCompatActivity {
                                 sharedElements,
                                 sharedElementSnapshots);
                         // Make sure to perform this animation after the transition has ended.
-                        ViewCompat.animate(mToolbarBack)
+                        ViewCompat.animate(toolbarBack)
                                 .setStartDelay(startDelay)
                                 .scaleX(1f)
                                 .scaleY(1f)
@@ -147,13 +134,13 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        if (mSavedStateIsPlaying) {
-            mQuizFragment = (QuizFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-            if (!mQuizFragment.hasSolvedStateListener()) {
-                mQuizFragment.setSolvedStateListener(getSolvedStateListener());
+        if (savedStateIsPlaying) {
+            quizFragment = (QuizFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            if (!quizFragment.hasSolvedStateListener()) {
+                quizFragment.setSolvedStateListener(getSolvedStateListener());
             }
             findViewById(R.id.quiz_fragment_container).setVisibility(View.VISIBLE);
-            mQuizFab.hide();
+            quizFab.hide();
         } else {
             initQuizFragment();
         }
@@ -162,19 +149,19 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putBoolean(STATE_IS_PLAYING, mQuizFab.getVisibility() == View.GONE);
+        outState.putBoolean(STATE_IS_PLAYING, quizFab.getVisibility() == View.GONE);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onBackPressed() {
-        if (mIcon == null || mQuizFab == null) {
+        if (icon == null || quizFab == null) {
             // Skip the animation if icon or fab are not initialized.
             super.onBackPressed();
             return;
         }
 
-        ViewCompat.animate(mToolbarBack)
+        ViewCompat.animate(toolbarBack)
                 .scaleX(0f)
                 .scaleY(0f)
                 .alpha(0f)
@@ -182,17 +169,17 @@ public class QuizActivity extends AppCompatActivity {
                 .start();
 
         // Scale the icon and fab to 0 size before calling onBackPressed if it exists.
-        ViewCompat.animate(mIcon)
+        ViewCompat.animate(icon)
                 .scaleX(.7f)
                 .scaleY(.7f)
                 .alpha(0f)
-                .setInterpolator(mInterpolator)
+                .setInterpolator(interpolator)
                 .start();
 
-        ViewCompat.animate(mQuizFab)
+        ViewCompat.animate(quizFab)
                 .scaleX(0f)
                 .scaleY(0f)
-                .setInterpolator(mInterpolator)
+                .setInterpolator(interpolator)
                 .setStartDelay(100)
                 .setListener(new ViewPropertyAnimatorListenerAdapter() {
                     @SuppressLint("NewApi")
@@ -213,11 +200,11 @@ public class QuizActivity extends AppCompatActivity {
         initQuizFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.quiz_fragment_container, mQuizFragment, FRAGMENT_TAG)
+                .replace(R.id.quiz_fragment_container, quizFragment, FRAGMENT_TAG)
                 .commit();
         final FrameLayout container = (FrameLayout) findViewById(R.id.quiz_fragment_container);
         container.setBackgroundColor(ContextCompat.
-                getColor(this, mCategory.getTheme().getWindowBackgroundColor()));
+                getColor(this, quiz.getTheme().getWindowBackgroundColor()));
         revealFragmentContainer(clickedView, container);
         // the toolbar should not have more elevation than the content while playing
         setToolbarElevation(false);
@@ -229,7 +216,7 @@ public class QuizActivity extends AppCompatActivity {
         } else {
             fragmentContainer.setVisibility(View.VISIBLE);
             clickedView.setVisibility(View.GONE);
-            mIcon.setVisibility(View.GONE);
+            icon.setVisibility(View.GONE);
         }
     }
 
@@ -241,7 +228,7 @@ public class QuizActivity extends AppCompatActivity {
                 .scaleX(0)
                 .scaleY(0)
                 .alpha(0)
-                .setInterpolator(mInterpolator)
+                .setInterpolator(interpolator)
                 .setListener(new ViewPropertyAnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(View view) {
@@ -253,7 +240,7 @@ public class QuizActivity extends AppCompatActivity {
 
         fragmentContainer.setVisibility(View.VISIBLE);
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(mCircularReveal).with(mColorChange);
+        animatorSet.play(circularReveal).with(colorChange);
         animatorSet.start();
     }
 
@@ -263,39 +250,39 @@ public class QuizActivity extends AppCompatActivity {
         // Subtract the start view's height to adjust for relative coordinates on screen.
         int centerY = (startView.getTop() + startView.getBottom()) / 2 - startView.getHeight();
         float endRadius = (float) Math.hypot((double) centerX, (double) centerY);
-        mCircularReveal = ViewAnimationUtils.createCircularReveal(
+        circularReveal = ViewAnimationUtils.createCircularReveal(
                 targetView, centerX, centerY, startView.getWidth(), endRadius);
-        mCircularReveal.setInterpolator(new FastOutLinearInInterpolator());
+        circularReveal.setInterpolator(new FastOutLinearInInterpolator());
 
-        mCircularReveal.addListener(new AnimatorListenerAdapter() {
+        circularReveal.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mIcon.setVisibility(View.GONE);
-                mCircularReveal.removeListener(this);
+                icon.setVisibility(View.GONE);
+                circularReveal.removeListener(this);
             }
         });
         // Adding a color animation from the FAB's color to transparent creates a dissolve like
         // effect to the circular reveal.
-        int accentColor = ContextCompat.getColor(this, mCategory.getTheme().getAccentColor());
-        mColorChange = ObjectAnimator.ofInt(targetView,
+        int accentColor = ContextCompat.getColor(this, quiz.getTheme().getAccentColor());
+        colorChange = ObjectAnimator.ofInt(targetView,
                 ViewUtils.FOREGROUND_COLOR, accentColor, Color.TRANSPARENT);
-        mColorChange.setEvaluator(new ArgbEvaluator());
-        mColorChange.setInterpolator(mInterpolator);
+        colorChange.setEvaluator(new ArgbEvaluator());
+        colorChange.setInterpolator(interpolator);
     }
 
     @SuppressLint("NewApi")
     public void setToolbarElevation(boolean shouldElevate) {
         if (ApiLevelHelper.isAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
-            mToolbarBack.setElevation(shouldElevate ?
+            toolbarBack.setElevation(shouldElevate ?
                     getResources().getDimension(R.dimen.elevation_header) : 0);
         }
     }
 
     private void initQuizFragment() {
-        if (mQuizFragment != null) {
+        if (quizFragment != null) {
             return;
         }
-        mQuizFragment = QuizFragment.newInstance(mCategory, getSolvedStateListener());
+        quizFragment = QuizFragment.newInstance(quiz, getSolvedStateListener());
         setToolbarElevation(false);
     }
 
@@ -314,12 +301,12 @@ public class QuizActivity extends AppCompatActivity {
                  * new values. This has to run delayed due to the queued animation
                  * to hide the fab initially.
                  */
-                if (null != mCircularReveal && mCircularReveal.isRunning()) {
-                    mCircularReveal.addListener(new AnimatorListenerAdapter() {
+                if (null != circularReveal && circularReveal.isRunning()) {
+                    circularReveal.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             showQuizFabWithDoneIcon();
-                            mCircularReveal.removeListener(this);
+                            circularReveal.removeListener(this);
                         }
                     });
                 } else {
@@ -328,15 +315,15 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             private void showQuizFabWithDoneIcon() {
-                mQuizFab.setImageResource(R.drawable.ic_tick);
-                mQuizFab.setId(R.id.quiz_done);
-                mQuizFab.setVisibility(View.VISIBLE);
-                mQuizFab.setScaleX(0f);
-                mQuizFab.setScaleY(0f);
-                ViewCompat.animate(mQuizFab)
+                quizFab.setImageResource(R.drawable.ic_tick);
+                quizFab.setId(R.id.quiz_done);
+                quizFab.setVisibility(View.VISIBLE);
+                quizFab.setScaleX(0f);
+                quizFab.setScaleY(0f);
+                ViewCompat.animate(quizFab)
                         .scaleX(1)
                         .scaleY(1)
-                        .setInterpolator(mInterpolator)
+                        .setInterpolator(interpolator)
                         .setListener(null)
                         .start();
             }
@@ -346,7 +333,7 @@ public class QuizActivity extends AppCompatActivity {
     private void setResultSolved() {
         // Send it through json with intent
         Intent intent = new Intent();
-        CategoryJson.to(intent, mCategory);
+        CategoryJson.to(intent, quiz);
         setResult(R.id.solved, intent);
     }
 
@@ -357,17 +344,9 @@ public class QuizActivity extends AppCompatActivity {
         submitAnswer();
     }
 
-    /**
-     * Solely exists for testing purposes and making sure Espresso does not get confused.
-     */
-    public void lockIdlingResource() {
-        mCountingIdlingResource.increment();
-    }
-
     private void submitAnswer() {
-        mCountingIdlingResource.decrement();
-        if (!mQuizFragment.showNextPage()) {
-            mQuizFragment.showSummary();
+        if (!quizFragment.showNextPage()) {
+            quizFragment.showSummary();
             setResultSolved();
             return;
         }
@@ -375,59 +354,52 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NewApi")
-    private void populate(Category category) {
-        mCategory = category;
-        setTheme(mCategory.getTheme().getStyleId());
+    private void populate(Quiz quiz) {
+        this.quiz = quiz;
+        setTheme(this.quiz.getTheme().getStyleId());
         if (ApiLevelHelper.isAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
             Window window = getWindow();
             window.setStatusBarColor(ContextCompat.getColor(this,
-                    mCategory.getTheme().getPrimaryDarkColor()));
+                    this.quiz.getTheme().getPrimaryDarkColor()));
         }
-        initLayout(mCategory.getId());
-        initToolbar(mCategory);
+        initLayout(this.quiz.getId());
+        initToolbar(this.quiz);
     }
 
     private void initLayout(String categoryId) {
         setContentView(R.layout.activity_quiz);
         //noinspection PrivateResource
-        mIcon = (ImageView) findViewById(R.id.icon);
-        int resId = getResources().getIdentifier(IMAGE_CATEGORY + categoryId, DRAWABLE,
-                getApplicationContext().getPackageName());
-        mIcon.setImageResource(resId);
-        mIcon.setImageResource(resId);
-        ViewCompat.animate(mIcon)
+        icon = (ImageView) findViewById(R.id.icon);
+        // TODO quiz image?
+//        int resId = getResources().getIdentifier(IMAGE_CATEGORY + categoryId, DRAWABLE, getApplicationContext().getPackageName());
+//        icon.setImageResource(resId);
+        ViewCompat.animate(icon)
                 .scaleX(1)
                 .scaleY(1)
                 .alpha(1)
-                .setInterpolator(mInterpolator)
+                .setInterpolator(interpolator)
                 .setStartDelay(300)
                 .start();
-        mQuizFab = (FloatingActionButton) findViewById(R.id.fab_quiz);
-        mQuizFab.setImageResource(R.drawable.ic_play);
-        if (mSavedStateIsPlaying) {
-            mQuizFab.hide();
+        quizFab = (FloatingActionButton) findViewById(R.id.fab_quiz);
+        quizFab.setImageResource(R.drawable.ic_play);
+        if (savedStateIsPlaying) {
+            quizFab.hide();
         } else {
-            mQuizFab.show();
+            quizFab.show();
         }
-        mQuizFab.setOnClickListener(mOnClickListener);
+        quizFab.setOnClickListener(onClickListener);
     }
 
-    private void initToolbar(Category category) {
-        mToolbarBack = findViewById(R.id.back);
-        mToolbarBack.setOnClickListener(mOnClickListener);
+    private void initToolbar(Quiz quiz) {
+        toolbarBack = findViewById(R.id.back);
+        toolbarBack.setOnClickListener(onClickListener);
         TextView titleView = (TextView) findViewById(R.id.category_title);
-        titleView.setText(category.getName());
+        titleView.setText(quiz.getName());
         titleView.setTextColor(ContextCompat.getColor(this,
-                category.getTheme().getTextPrimaryColor()));
-        if (mSavedStateIsPlaying) {
+                quiz.getTheme().getTextPrimaryColor()));
+        if (savedStateIsPlaying) {
             // the toolbar should not have more elevation than the content while playing
             setToolbarElevation(false);
         }
-    }
-
-    @SuppressWarnings("unused")
-    @VisibleForTesting
-    public CountingIdlingResource getCountingIdlingResource() {
-        return mCountingIdlingResource;
     }
 }

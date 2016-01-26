@@ -24,7 +24,7 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
+import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuizQuestion> {
     private SeekBar mSeekBar;
     private List<String> mAlphabet;
 
-    public AlphaPickerQuizView(Context context, Category category, AlphaPickerQuizQuestion quiz) {
+    public AlphaPickerQuizView(Context context, Quiz category, AlphaPickerQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

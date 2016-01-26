@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
+import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Quiz;
 
 @SuppressLint("ViewConstructor")
 public class FillBlankQuizView extends TextInputQuizView<FillBlankQuizQuestion> {
@@ -34,7 +34,7 @@ public class FillBlankQuizView extends TextInputQuizView<FillBlankQuizQuestion> 
 
     private EditText mAnswerView;
 
-    public FillBlankQuizView(Context context, Category category, FillBlankQuizQuestion quiz) {
+    public FillBlankQuizView(Context context, Quiz category, FillBlankQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

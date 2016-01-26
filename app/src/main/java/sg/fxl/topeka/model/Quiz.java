@@ -24,9 +24,9 @@ import java.util.List;
 
 import sg.fxl.topeka.model.quiz.QuizQuestion;
 
-public class Category{
+public class Quiz {
+    public static final String TAG = "Quiz";
 
-    public static final String TAG = "Category";
     private static final int SCORE = 8;
     private static final int NO_SCORE = 0;
 
@@ -37,10 +37,7 @@ public class Category{
     private List<QuizQuestion> quizzes;
     private boolean solved;
 
-    public Category() {
-    }
-
-    public Category(String name, String id, Theme theme, List<QuizQuestion> quizzes, boolean solved) {
+    public Quiz(String name, String id, Theme theme, List<QuizQuestion> quizzes, boolean solved) {
         this.name = name;
         this.id = id;
         this.theme = theme;
@@ -49,7 +46,7 @@ public class Category{
         this.solved = solved;
     }
 
-    public Category(String name, String id, Theme theme, List<QuizQuestion> quizzes, int[] scores, boolean solved) {
+    public Quiz(String name, String id, Theme theme, List<QuizQuestion> quizzes, int[] scores, boolean solved) {
         this.name = name;
         this.id = id;
         this.theme = theme;
@@ -154,7 +151,7 @@ public class Category{
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "Quiz{" +
                 "name='" + name + '\'' +
                 ", id='" + id + '\'' +
                 ", theme=" + theme +
@@ -174,18 +171,18 @@ public class Category{
             return false;
         }
 
-        Category category = (Category) o;
+        Quiz quiz = (Quiz) o;
 
-        if (!id.equals(category.id)) {
+        if (!id.equals(quiz.id)) {
             return false;
         }
-        if (!name.equals(category.name)) {
+        if (!name.equals(quiz.name)) {
             return false;
         }
-        if (!quizzes.equals(category.quizzes)) {
+        if (!quizzes.equals(quiz.quizzes)) {
             return false;
         }
-        if (theme != category.theme) {
+        if (theme != quiz.theme) {
             return false;
         }
 

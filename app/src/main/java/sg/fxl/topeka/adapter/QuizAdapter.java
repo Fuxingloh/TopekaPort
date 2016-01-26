@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillTwoBlanksQuizQuestion;
@@ -55,14 +55,14 @@ public class QuizAdapter extends BaseAdapter {
 
     private final Context mContext;
     private final List<QuizQuestion> mQuizzes;
-    private final Category mCategory;
+    private final Quiz mQuiz;
     private final int mViewTypeCount;
     private List<String> mQuizTypes;
 
-    public QuizAdapter(Context context, Category category) {
+    public QuizAdapter(Context context, Quiz quiz) {
         mContext = context;
-        mCategory = category;
-        mQuizzes = category.getQuizzes();
+        mQuiz = quiz;
+        mQuizzes = quiz.getQuizzes();
         mViewTypeCount = calculateViewTypeCount();
 
     }
@@ -128,25 +128,25 @@ public class QuizAdapter extends BaseAdapter {
     private AbsQuizView createViewFor(QuizQuestion quizQuestion) {
         switch (quizQuestion.getType()) {
             case ALPHA_PICKER:
-                return new AlphaPickerQuizView(mContext, mCategory, (AlphaPickerQuizQuestion) quizQuestion);
+                return new AlphaPickerQuizView(mContext, mQuiz, (AlphaPickerQuizQuestion) quizQuestion);
             case FILL_BLANK:
-                return new FillBlankQuizView(mContext, mCategory, (FillBlankQuizQuestion) quizQuestion);
+                return new FillBlankQuizView(mContext, mQuiz, (FillBlankQuizQuestion) quizQuestion);
             case FILL_TWO_BLANKS:
-                return new FillTwoBlanksQuizView(mContext, mCategory, (FillTwoBlanksQuizQuestion) quizQuestion);
+                return new FillTwoBlanksQuizView(mContext, mQuiz, (FillTwoBlanksQuizQuestion) quizQuestion);
             case FOUR_QUARTER:
-                return new FourQuarterQuizView(mContext, mCategory, (FourQuarterQuizQuestion) quizQuestion);
+                return new FourQuarterQuizView(mContext, mQuiz, (FourQuarterQuizQuestion) quizQuestion);
             case MULTI_SELECT:
-                return new MultiSelectQuizView(mContext, mCategory, (MultiSelectQuizQuestion) quizQuestion);
+                return new MultiSelectQuizView(mContext, mQuiz, (MultiSelectQuizQuestion) quizQuestion);
             case PICKER:
-                return new PickerQuizView(mContext, mCategory, (PickerQuizQuestion) quizQuestion);
+                return new PickerQuizView(mContext, mQuiz, (PickerQuizQuestion) quizQuestion);
             case SINGLE_SELECT:
             case SINGLE_SELECT_ITEM:
-                return new SelectItemQuizView(mContext, mCategory, (SelectItemQuizQuestion) quizQuestion);
+                return new SelectItemQuizView(mContext, mQuiz, (SelectItemQuizQuestion) quizQuestion);
             case TOGGLE_TRANSLATE:
-                return new ToggleTranslateQuizView(mContext, mCategory,
+                return new ToggleTranslateQuizView(mContext, mQuiz,
                         (ToggleTranslateQuizQuestion) quizQuestion);
             case TRUE_FALSE:
-                return new TrueFalseQuizView(mContext, mCategory, (TrueFalseQuizQuestion) quizQuestion);
+                return new TrueFalseQuizView(mContext, mQuiz, (TrueFalseQuizQuestion) quizQuestion);
         }
         throw new UnsupportedOperationException(
                 "QuizQuestion of type " + quizQuestion.getType() + " can not be displayed.");

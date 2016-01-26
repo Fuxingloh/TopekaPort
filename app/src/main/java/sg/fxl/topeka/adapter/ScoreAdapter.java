@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topekaport.R;
 
@@ -41,16 +41,16 @@ import sg.fxl.topekaport.R;
  */
 public class ScoreAdapter extends BaseAdapter {
 
-    private final Category mCategory;
+    private final Quiz mQuiz;
     private final int count;
     private final List<QuizQuestion> mQuizQuestionList;
 
     private Drawable mSuccessIcon;
     private Drawable mFailedIcon;
 
-    public ScoreAdapter(Category category) {
-        mCategory = category;
-        mQuizQuestionList = mCategory.getQuizzes();
+    public ScoreAdapter(Quiz quiz) {
+        mQuiz = quiz;
+        mQuizQuestionList = mQuiz.getQuizzes();
         count = mQuizQuestionList.size();
     }
 
@@ -89,7 +89,7 @@ public class ScoreAdapter extends BaseAdapter {
     private void setSolvedStateForQuiz(ImageView solvedState, int position) {
         final Context context = solvedState.getContext();
         final Drawable tintedImage;
-        if (mCategory.isSolvedCorrectly(getItem(position))) {
+        if (mQuiz.isSolvedCorrectly(getItem(position))) {
             tintedImage = getSuccessIcon(context);
         } else {
             tintedImage = getFailedIcon(context);

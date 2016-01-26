@@ -40,12 +40,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import sg.fxl.topeka.model.quiz.QuizQuestion;
-import sg.fxl.topekaport.R; import sg.fxl.topekaport.QuizActivity;
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.helper.ViewUtils;
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
+import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topeka.widget.fab.CheckableFab;
+import sg.fxl.topekaport.QuizActivity;
+import sg.fxl.topekaport.R;
 
 /**
  * This is the base class for displaying a {@link QuizQuestion}.
@@ -59,45 +60,45 @@ import sg.fxl.topeka.widget.fab.CheckableFab;
  * </p>
  *
  * @param <Q> The type of {@link QuizQuestion} you want to
- * display.
+ *            display.
  */
 public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
 
     private static final int ANSWER_HIDE_DELAY = 500;
     private static final int FOREGROUND_COLOR_CHANGE_DELAY = 750;
-    private final int mSpacingDouble;
-    private final LayoutInflater mLayoutInflater;
-    private final Category mCategory;
-    private final Q mQuiz;
-    private final Interpolator mLinearOutSlowInInterpolator;
-    private final Handler mHandler;
-    private final InputMethodManager mInputMethodManager;
-    private boolean mAnswered;
-    private TextView mQuestionView;
-    private CheckableFab mSubmitAnswer;
-    private Runnable mHideFabRunnable;
-    private Runnable mMoveOffScreenRunnable;
+    private final int spacingDouble;
+    private final LayoutInflater layoutInflater;
+    private final Quiz quiz;
+    private final Q quizQuestion;
+    private final Interpolator linearOutSlowInInterpolator;
+    private final Handler handler;
+    private final InputMethodManager inputMethodManager;
+    private boolean answered;
+    private TextView questionView;
+    private CheckableFab submitAnswer;
+    private Runnable hideFabRunnable;
+    private Runnable moveOffScreenRunnable;
 
     /**
      * Enables creation of views for quizzes.
      *
-     * @param context The context for this view.
-     * @param category The {@link Category} this view is running in.
-     * @param quiz The actual {@link QuizQuestion} that is going to be displayed.
+     * @param context      The context for this view.
+     * @param quiz         The {@link Quiz} this view is running in.
+     * @param quizQuestion The actual {@link QuizQuestion} that is going to be displayed.
      */
-    public AbsQuizView(Context context, Category category, Q quiz) {
+    public AbsQuizView(Context context, Quiz quiz, Q quizQuestion) {
         super(context);
-        mQuiz = quiz;
-        mCategory = category;
-        mSpacingDouble = getResources().getDimensionPixelSize(R.dimen.spacing_double);
-        mLayoutInflater = LayoutInflater.from(context);
-        mSubmitAnswer = getSubmitButton();
-        mLinearOutSlowInInterpolator = new LinearOutSlowInInterpolator();
-        mHandler = new Handler();
-        mInputMethodManager = (InputMethodManager) context.getSystemService
+        this.quizQuestion = quizQuestion;
+        this.quiz = quiz;
+        spacingDouble = getResources().getDimensionPixelSize(R.dimen.spacing_double);
+        layoutInflater = LayoutInflater.from(context);
+        submitAnswer = getSubmitButton();
+        linearOutSlowInInterpolator = new LinearOutSlowInInterpolator();
+        handler = new Handler();
+        inputMethodManager = (InputMethodManager) context.getSystemService
                 (Context.INPUT_METHOD_SERVICE);
 
-        setId(quiz.getId());
+        setId(quizQuestion.getId());
         setUpQuestionView();
         LinearLayout container = createContainerLayout(context);
         View quizContentView = getInitializedContentView();
@@ -117,10 +118,10 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
      * Sets the behaviour for all question views.
      */
     private void setUpQuestionView() {
-        mQuestionView = (TextView) mLayoutInflater.inflate(R.layout.question, this, false);
-        mQuestionView.setBackgroundColor(ContextCompat.getColor(getContext(),
-                mCategory.getTheme().getPrimaryColor()));
-        mQuestionView.setText(getQuiz().getQuestion());
+        questionView = (TextView) layoutInflater.inflate(R.layout.question, this, false);
+        questionView.setBackgroundColor(ContextCompat.getColor(getContext(),
+                quiz.getTheme().getPrimaryColor()));
+        questionView.setText(getQuiz().getQuestion());
     }
 
     private LinearLayout createContainerLayout(Context context) {
@@ -145,7 +146,7 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
     private void addContentView(LinearLayout container, View quizContentView) {
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-        container.addView(mQuestionView, layoutParams);
+        container.addView(questionView, layoutParams);
         container.addView(quizContentView, layoutParams);
         addView(container, layoutParams);
     }
@@ -159,40 +160,40 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
         fabLayoutParams.setMargins(0, // left
                 bottomOfQuestionView - halfAFab, //top
                 0, // right
-                mSpacingDouble); // bottom
-        MarginLayoutParamsCompat.setMarginEnd(fabLayoutParams, mSpacingDouble);
+                spacingDouble); // bottom
+        MarginLayoutParamsCompat.setMarginEnd(fabLayoutParams, spacingDouble);
         if (ApiLevelHelper.isLowerThan(Build.VERSION_CODES.LOLLIPOP)) {
             // Account for the fab's emulated shadow.
-            fabLayoutParams.topMargin -= (mSubmitAnswer.getPaddingTop() / 2);
+            fabLayoutParams.topMargin -= (submitAnswer.getPaddingTop() / 2);
         }
-        addView(mSubmitAnswer, fabLayoutParams);
+        addView(submitAnswer, fabLayoutParams);
     }
 
     private CheckableFab getSubmitButton() {
-        if (null == mSubmitAnswer) {
-            mSubmitAnswer = (CheckableFab) getLayoutInflater()
+        if (null == submitAnswer) {
+            submitAnswer = (CheckableFab) getLayoutInflater()
                     .inflate(R.layout.answer_submit, this, false);
-            mSubmitAnswer.hide();
-            mSubmitAnswer.setOnClickListener(new OnClickListener() {
+            submitAnswer.hide();
+            submitAnswer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     submitAnswer(v);
-                    if (mInputMethodManager.isAcceptingText()) {
-                        mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    if (inputMethodManager.isAcceptingText()) {
+                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
-                    mSubmitAnswer.setEnabled(false);
+                    submitAnswer.setEnabled(false);
                 }
             });
         }
-        return mSubmitAnswer;
+        return submitAnswer;
     }
 
     private void setDefaultPadding(View view) {
-        view.setPadding(mSpacingDouble, mSpacingDouble, mSpacingDouble, mSpacingDouble);
+        view.setPadding(spacingDouble, spacingDouble, spacingDouble, spacingDouble);
     }
 
     protected LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
+        return layoutInflater;
     }
 
     /**
@@ -226,11 +227,11 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
     public abstract void setUserInput(Bundle savedInput);
 
     public Q getQuiz() {
-        return mQuiz;
+        return quizQuestion;
     }
 
     protected boolean isAnswered() {
-        return mAnswered;
+        return answered;
     }
 
     /**
@@ -239,13 +240,13 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
      * @param answered <code>true</code> if an answer was selected, else <code>false</code>.
      */
     protected void allowAnswer(final boolean answered) {
-        if (null != mSubmitAnswer) {
+        if (null != submitAnswer) {
             if (answered) {
-                mSubmitAnswer.show();
+                submitAnswer.show();
             } else {
-                mSubmitAnswer.hide();
+                submitAnswer.hide();
             }
-            mAnswered = answered;
+            this.answered = answered;
         }
     }
 
@@ -269,7 +270,7 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
     @SuppressWarnings("UnusedParameters")
     private void submitAnswer(final View v) {
         final boolean answerCorrect = isAnswerCorrect();
-        mQuiz.setSolved(true);
+        quizQuestion.setSolved(true);
         performScoreAnimation(answerCorrect);
     }
 
@@ -279,7 +280,6 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
      * @param answerCorrect <code>true</code> if the answer was correct, else <code>false</code>.
      */
     private void performScoreAnimation(final boolean answerCorrect) {
-        ((QuizActivity) getContext()).lockIdlingResource();
         // Decide which background color to use.
         final int backgroundColor = ContextCompat.getColor(getContext(),
                 answerCorrect ? R.color.green : R.color.red);
@@ -293,15 +293,15 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
 
     @SuppressLint("NewApi")
     private void adjustFab(boolean answerCorrect, int backgroundColor) {
-        mSubmitAnswer.setChecked(answerCorrect);
-        mSubmitAnswer.setBackgroundTintList(ColorStateList.valueOf(backgroundColor));
-        mHideFabRunnable = new Runnable() {
+        submitAnswer.setChecked(answerCorrect);
+        submitAnswer.setBackgroundTintList(ColorStateList.valueOf(backgroundColor));
+        hideFabRunnable = new Runnable() {
             @Override
             public void run() {
-                mSubmitAnswer.hide();
+                submitAnswer.hide();
             }
         };
-        mHandler.postDelayed(mHideFabRunnable, ANSWER_HIDE_DELAY);
+        handler.postDelayed(hideFabRunnable, ANSWER_HIDE_DELAY);
     }
 
     private void resizeView() {
@@ -316,18 +316,18 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
                                     float targetScale, int durationOffset) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, property,
                 1f, targetScale);
-        animator.setInterpolator(mLinearOutSlowInInterpolator);
+        animator.setInterpolator(linearOutSlowInInterpolator);
         animator.setStartDelay(FOREGROUND_COLOR_CHANGE_DELAY + durationOffset);
         animator.start();
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        if (mHideFabRunnable != null) {
-            mHandler.removeCallbacks(mHideFabRunnable);
+        if (hideFabRunnable != null) {
+            handler.removeCallbacks(hideFabRunnable);
         }
-        if (mMoveOffScreenRunnable != null) {
-            mHandler.removeCallbacks(mMoveOffScreenRunnable);
+        if (moveOffScreenRunnable != null) {
+            handler.removeCallbacks(moveOffScreenRunnable);
         }
         super.onDetachedFromWindow();
     }
@@ -342,16 +342,16 @@ public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
 
     private void moveViewOffScreen(final boolean answerCorrect) {
         // Move the current view off the screen.
-        mMoveOffScreenRunnable = new Runnable() {
+        moveOffScreenRunnable = new Runnable() {
             @Override
             public void run() {
-                mCategory.setScore(getQuiz(), answerCorrect);
+                quiz.setScore(getQuiz(), answerCorrect);
                 if (getContext() instanceof QuizActivity) {
                     ((QuizActivity) getContext()).proceed();
                 }
             }
         };
-        mHandler.postDelayed(mMoveOffScreenRunnable,
+        handler.postDelayed(moveOffScreenRunnable,
                 FOREGROUND_COLOR_CHANGE_DELAY * 2);
     }
 

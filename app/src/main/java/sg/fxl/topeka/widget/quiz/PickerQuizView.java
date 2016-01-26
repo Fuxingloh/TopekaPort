@@ -24,7 +24,8 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
+import sg.fxl.topekaport.R;
 import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
 
 @SuppressLint("ViewConstructor")
@@ -38,7 +39,7 @@ public final class PickerQuizView extends AbsQuizView<PickerQuizQuestion> {
     private int mMin;
     private int mProgress;
 
-    public PickerQuizView(Context context, Category category, PickerQuizQuestion quiz) {
+    public PickerQuizView(Context context, Quiz category, PickerQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

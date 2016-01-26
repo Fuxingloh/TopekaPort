@@ -12,7 +12,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 import sg.fxl.topeka.model.quiz.QuizQuestion;
@@ -36,19 +35,19 @@ public class CategoryJson {
         return gson;
     }
 
-    public static String to(Category category) {
-        return gson.toJson(category);
+    public static String to(Quiz quiz) {
+        return gson.toJson(quiz);
     }
 
-    public static void to(Intent intent, Category category) {
-        intent.putExtra(TAG, to(category));
+    public static void to(Intent intent, Quiz quiz) {
+        intent.putExtra(TAG, to(quiz));
     }
 
-    public static Category from(String json) {
-        return gson.fromJson(json, Category.class);
+    public static Quiz from(String json) {
+        return gson.fromJson(json, Quiz.class);
     }
 
-    public static Category from(Intent intent) throws IOException {
+    public static Quiz from(Intent intent) {
         return from(intent.getStringExtra(TAG));
     }
 

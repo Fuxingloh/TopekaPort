@@ -28,7 +28,7 @@ import android.widget.ListView;
 
 import sg.fxl.topekaport.R; import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.AnswerHelper;
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.SelectItemQuizQuestion;
 
 @SuppressLint("ViewConstructor")
@@ -39,7 +39,7 @@ public class SelectItemQuizView extends AbsQuizView<SelectItemQuizQuestion> {
     private boolean[] mAnswers;
     private ListView mListView;
 
-    public SelectItemQuizView(Context context, Category category, SelectItemQuizQuestion quiz) {
+    public SelectItemQuizView(Context context, Quiz category, SelectItemQuizQuestion quiz) {
         super(context, category, quiz);
         mAnswers = getAnswers();
     }

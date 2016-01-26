@@ -27,7 +27,7 @@ import android.widget.ListView;
 
 import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.AnswerHelper;
-import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
 
 @SuppressLint("ViewConstructor")
@@ -37,7 +37,7 @@ public class MultiSelectQuizView extends AbsQuizView<MultiSelectQuizQuestion> {
 
     private ListView mListView;
 
-    public MultiSelectQuizView(Context context, Category category, MultiSelectQuizQuestion quiz) {
+    public MultiSelectQuizView(Context context, Quiz category, MultiSelectQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

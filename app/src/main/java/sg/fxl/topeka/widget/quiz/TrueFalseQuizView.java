@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import sg.fxl.topeka.model.quiz.TrueFalseQuizQuestion;
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
+import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Quiz;
 
 @SuppressLint("ViewConstructor")
 public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuizQuestion> {
@@ -42,7 +42,7 @@ public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuizQuestion> {
     private View mAnswerTrue;
     private View mAnswerFalse;
 
-    public TrueFalseQuizView(Context context, Category category, TrueFalseQuizQuestion quiz) {
+    public TrueFalseQuizView(Context context, Quiz category, TrueFalseQuizQuestion quiz) {
         super(context, category, quiz);
     }
 
