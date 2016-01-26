@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == R.id.solved) {
             Quiz quiz = CategoryJson.from(intent);
             for (QuizQuestion quizQuestion : quiz.getQuizzes()) {
-                Log.d("Result", quizQuestion.getSelectedAnswer().toString());
+                Log.d("Result", quizQuestion.getSelectedAnswerString());
             }
         }
     }

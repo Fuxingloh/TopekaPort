@@ -69,6 +69,10 @@ public abstract class QuizQuestion<A>{
         return selectedAnswer;
     }
 
+    public String getSelectedAnswerString(){
+        return getSelectedAnswer().toString();
+    }
+
     public void setSelectedAnswer(A selectedAnswer) {
         this.selectedAnswer = selectedAnswer;
     }

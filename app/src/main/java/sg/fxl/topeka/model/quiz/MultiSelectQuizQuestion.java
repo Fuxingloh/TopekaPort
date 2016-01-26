@@ -35,4 +35,9 @@ public final class MultiSelectQuizQuestion extends OptionsQuizQuestion<String> {
         return AnswerHelper.getAnswer(getAnswer(), getOptions());
     }
 
+    @Override
+    public String getSelectedAnswerString() {
+        return AnswerHelper.getAnswer(getSelectedAnswer(), getOptions());
+    }
+
 }
