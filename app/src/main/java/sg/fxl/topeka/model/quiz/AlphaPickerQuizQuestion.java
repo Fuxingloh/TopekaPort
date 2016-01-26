@@ -16,37 +16,20 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
+public final class AlphaPickerQuizQuestion extends QuizQuestion<String> {
 
-import sg.fxl.topeka.helper.ParcelableHelper;
-
-@SuppressLint("ParcelCreator")
-public final class TrueFalseQuiz extends Quiz<Boolean> {
-
-    public TrueFalseQuiz(String question, Boolean answer, boolean solved) {
+    public AlphaPickerQuizQuestion(String question, String answer, boolean solved) {
         super(question, answer, solved);
-    }
-
-    @SuppressWarnings("unused")
-    public TrueFalseQuiz(Parcel in) {
-        super(in);
-        setAnswer(ParcelableHelper.readBoolean(in));
-    }
-
-    @Override
-    public String getStringAnswer() {
-        return getAnswer().toString();
     }
 
     @Override
     public QuizType getType() {
-        return QuizType.TRUE_FALSE;
+        return QuizType.ALPHA_PICKER;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        ParcelableHelper.writeBoolean(dest, getAnswer());
+    public String getStringAnswer() {
+        return getAnswer();
     }
+
 }

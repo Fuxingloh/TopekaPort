@@ -16,8 +16,6 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.os.Parcel;
-
 import java.util.Arrays;
 
 /**
@@ -25,19 +23,13 @@ import java.util.Arrays;
  *
  * @param <T> The options that can result in an answer.
  */
-public abstract class OptionsQuiz<T> extends Quiz<int[]> {
+public abstract class OptionsQuizQuestion<T> extends QuizQuestion<int[]> {
 
     private T[] mOptions;
 
-    public OptionsQuiz(String question, int[] answer, T[] options, boolean solved) {
+    public OptionsQuizQuestion(String question, int[] answer, T[] options, boolean solved) {
         super(question, answer, solved);
         mOptions = options;
-    }
-
-    public OptionsQuiz(Parcel in) {
-        super(in);
-        final int answer[] = in.createIntArray();
-        setAnswer(answer);
     }
 
     public T[] getOptions() {
@@ -53,28 +45,17 @@ public abstract class OptionsQuiz<T> extends Quiz<int[]> {
         return Arrays.equals(getAnswer(), answer);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeIntArray(getAnswer());
-    }
-
     @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OptionsQuiz)) {
+        if (!(o instanceof OptionsQuizQuestion)) {
             return false;
         }
 
-        OptionsQuiz that = (OptionsQuiz) o;
+        OptionsQuizQuestion that = (OptionsQuizQuestion) o;
 
         if (!Arrays.equals(getAnswer(), ((int[]) that.getAnswer()))) {
             return false;

@@ -24,11 +24,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import sg.fxl.topeka.model.quiz.FillTwoBlanksQuizQuestion;
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.FillTwoBlanksQuiz;
 
 @SuppressLint("ViewConstructor")
-public class FillTwoBlanksQuizView extends TextInputQuizView<FillTwoBlanksQuiz> {
+public class FillTwoBlanksQuizView extends TextInputQuizView<FillTwoBlanksQuizQuestion> {
 
     private static final String KEY_ANSWER_ONE = "ANSWER_ONE";
     private static final String KEY_ANSWER_TWO = "ANSWER_TWO";
@@ -37,7 +37,7 @@ public class FillTwoBlanksQuizView extends TextInputQuizView<FillTwoBlanksQuiz> 
     private EditText mAnswerOne;
     private EditText mAnswerTwo;
 
-    public FillTwoBlanksQuizView(Context context, Category category, FillTwoBlanksQuiz quiz) {
+    public FillTwoBlanksQuizView(Context context, Category category, FillTwoBlanksQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

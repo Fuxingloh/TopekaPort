@@ -16,25 +16,14 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
+import java.util.Arrays;
 
 import sg.fxl.topeka.helper.AnswerHelper;
 
-import java.util.Arrays;
+public final class FillTwoBlanksQuizQuestion extends QuizQuestion<String[]> {
 
-@SuppressLint("ParcelCreator")
-public final class FillTwoBlanksQuiz extends Quiz<String[]> {
-
-    public FillTwoBlanksQuiz(String question, String[] answer, boolean solved) {
+    public FillTwoBlanksQuizQuestion(String question, String[] answer, boolean solved) {
         super(question, answer, solved);
-    }
-
-    @SuppressWarnings("unused")
-    public FillTwoBlanksQuiz(Parcel in) {
-        super(in);
-        String answer[] = in.createStringArray();
-        setAnswer(answer);
     }
 
     @Override
@@ -45,12 +34,6 @@ public final class FillTwoBlanksQuiz extends Quiz<String[]> {
     @Override
     public String getStringAnswer() {
         return AnswerHelper.getAnswer(getAnswer());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeStringArray(getAnswer());
     }
 
     @Override
@@ -69,11 +52,11 @@ public final class FillTwoBlanksQuiz extends Quiz<String[]> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FillTwoBlanksQuiz)) {
+        if (!(o instanceof FillTwoBlanksQuizQuestion)) {
             return false;
         }
 
-        FillTwoBlanksQuiz quiz = (FillTwoBlanksQuiz) o;
+        FillTwoBlanksQuizQuestion quiz = (FillTwoBlanksQuizQuestion) o;
         final String[] answer = getAnswer();
         final String question = getQuestion();
         if (answer != null ? !Arrays.equals(answer, quiz.getAnswer()) : quiz.getAnswer() != null) {

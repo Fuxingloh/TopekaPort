@@ -27,18 +27,18 @@ import android.widget.GridView;
 import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.FourQuarterQuiz;
+import sg.fxl.topeka.model.quiz.FourQuarterQuizQuestion;
 
 import sg.fxl.topekaport.R;
 
 @SuppressLint("ViewConstructor")
-public class FourQuarterQuizView extends AbsQuizView<FourQuarterQuiz> {
+public class FourQuarterQuizView extends AbsQuizView<FourQuarterQuizQuestion> {
 
     private static final String KEY_ANSWER = "ANSWER";
     private int mAnswered = -1;
     private GridView mAnswerView;
 
-    public FourQuarterQuizView(Context context, Category category, FourQuarterQuiz quiz) {
+    public FourQuarterQuizView(Context context, Category category, FourQuarterQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

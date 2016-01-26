@@ -30,17 +30,17 @@ import android.widget.ListView;
 import sg.fxl.topekaport.R; import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.AnswerHelper;
 import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.ToggleTranslateQuiz;
+import sg.fxl.topeka.model.quiz.ToggleTranslateQuizQuestion;
 
 @SuppressLint("ViewConstructor")
-public class ToggleTranslateQuizView extends AbsQuizView<ToggleTranslateQuiz> {
+public class ToggleTranslateQuizView extends AbsQuizView<ToggleTranslateQuizQuestion> {
 
     private static final String KEY_ANSWERS = "ANSWERS";
 
     private boolean[] mAnswers;
     private ListView mListView;
 
-    public ToggleTranslateQuizView(Context context, Category category, ToggleTranslateQuiz quiz) {
+    public ToggleTranslateQuizView(Context context, Category category, ToggleTranslateQuizQuestion quiz) {
         super(context, category, quiz);
         initAnswerSpace();
     }

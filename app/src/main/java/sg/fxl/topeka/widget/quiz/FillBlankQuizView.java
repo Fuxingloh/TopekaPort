@@ -24,17 +24,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.FillBlankQuiz;
 
 @SuppressLint("ViewConstructor")
-public class FillBlankQuizView extends TextInputQuizView<FillBlankQuiz> {
+public class FillBlankQuizView extends TextInputQuizView<FillBlankQuizQuestion> {
 
     private static final String KEY_ANSWER = "ANSWER";
 
     private EditText mAnswerView;
 
-    public FillBlankQuizView(Context context, Category category, FillBlankQuiz quiz) {
+    public FillBlankQuizView(Context context, Category category, FillBlankQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

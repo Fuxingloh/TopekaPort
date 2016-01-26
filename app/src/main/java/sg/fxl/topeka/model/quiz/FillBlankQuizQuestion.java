@@ -16,27 +16,15 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
-
-@SuppressLint("ParcelCreator")
-public final class FillBlankQuiz extends Quiz<String> {
+public final class FillBlankQuizQuestion extends QuizQuestion<String> {
 
     private final String mStart;
     private final String mEnd;
 
-    public FillBlankQuiz(String question, String answer, String start, String end, boolean solved) {
+    public FillBlankQuizQuestion(String question, String answer, String start, String end, boolean solved) {
         super(question, answer, solved);
         mStart = start;
         mEnd = end;
-    }
-
-    @SuppressWarnings("unused")
-    public FillBlankQuiz(Parcel in) {
-        super(in);
-        setAnswer(in.readString());
-        mStart = in.readString();
-        mEnd = in.readString();
     }
 
     @Override
@@ -60,13 +48,5 @@ public final class FillBlankQuiz extends Quiz<String> {
     @Override
     public boolean isAnswerCorrect(String answer) {
         return getAnswer().equalsIgnoreCase(answer);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(getAnswer());
-        dest.writeString(mStart);
-        dest.writeString(mEnd);
     }
 }

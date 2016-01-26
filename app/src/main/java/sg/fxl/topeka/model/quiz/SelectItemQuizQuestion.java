@@ -16,23 +16,12 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
-
 import sg.fxl.topeka.helper.AnswerHelper;
 
-@SuppressLint("ParcelCreator")
-public final class SelectItemQuiz extends OptionsQuiz<String> {
+public final class SelectItemQuizQuestion extends OptionsQuizQuestion<String> {
 
-    public SelectItemQuiz(String question, int[] answer, String[] options, boolean solved) {
+    public SelectItemQuizQuestion(String question, int[] answer, String[] options, boolean solved) {
         super(question, answer, options, solved);
-    }
-
-    @SuppressWarnings("unused")
-    public SelectItemQuiz(Parcel in) {
-        super(in);
-        String[] options = in.createStringArray();
-        setOptions(options);
     }
 
     @Override
@@ -45,9 +34,4 @@ public final class SelectItemQuiz extends OptionsQuiz<String> {
         return AnswerHelper.getAnswer(getAnswer(), getOptions());
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeStringArray(getOptions());
-    }
 }

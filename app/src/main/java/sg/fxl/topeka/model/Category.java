@@ -16,90 +16,67 @@
 
 package sg.fxl.topeka.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import sg.fxl.topeka.helper.ParcelableHelper;
-import sg.fxl.topeka.model.quiz.Quiz;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Category implements Parcelable {
+import sg.fxl.topeka.model.quiz.QuizQuestion;
+
+public class Category{
 
     public static final String TAG = "Category";
-    public static final Creator<Category> CREATOR = new Creator<Category>() {
-        @Override
-        public Category createFromParcel(Parcel in) {
-            return new Category(in);
-        }
-
-        @Override
-        public Category[] newArray(int size) {
-            return new Category[size];
-        }
-    };
-
     private static final int SCORE = 8;
     private static final int NO_SCORE = 0;
-    private final String mName;
-    private final String mId;
-    private final Theme mTheme;
-    private final int[] mScores;
-    private List<Quiz> mQuizzes;
-    private boolean mSolved;
 
-    public Category(String name, String id, Theme theme, List<Quiz> quizzes, boolean solved) {
-        mName = name;
-        mId = id;
-        mTheme = theme;
-        mQuizzes = quizzes;
-        mScores = new int[quizzes.size()];
-        mSolved = solved;
+    private String name;
+    private String id;
+    private Theme theme;
+    private int[] scores;
+    private List<QuizQuestion> quizzes;
+    private boolean solved;
+
+    public Category() {
     }
 
-    public Category(String name, String id, Theme theme, List<Quiz> quizzes,
-                    int[] scores, boolean solved) {
-        mName = name;
-        mId = id;
-        mTheme = theme;
+    public Category(String name, String id, Theme theme, List<QuizQuestion> quizzes, boolean solved) {
+        this.name = name;
+        this.id = id;
+        this.theme = theme;
+        this.quizzes = quizzes;
+        scores = new int[quizzes.size()];
+        this.solved = solved;
+    }
+
+    public Category(String name, String id, Theme theme, List<QuizQuestion> quizzes, int[] scores, boolean solved) {
+        this.name = name;
+        this.id = id;
+        this.theme = theme;
         if (quizzes.size() == scores.length) {
-            mQuizzes = quizzes;
-            mScores = scores;
+            this.quizzes = quizzes;
+            this.scores = scores;
         } else {
             throw new IllegalArgumentException("Quizzes and scores must have the same length");
         }
-        mSolved = solved;
-    }
-
-    protected Category(Parcel in) {
-        mName = in.readString();
-        mId = in.readString();
-        mTheme = Theme.values()[in.readInt()];
-        mQuizzes = new ArrayList<>();
-        in.readTypedList(mQuizzes, Quiz.CREATOR);
-        mScores = in.createIntArray();
-        mSolved = ParcelableHelper.readBoolean(in);
+        this.solved = solved;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public Theme getTheme() {
-        return mTheme;
+        return theme;
     }
 
     @NonNull
-    public List<Quiz> getQuizzes() {
-        return mQuizzes;
+    public List<QuizQuestion> getQuizzes() {
+        return quizzes;
     }
 
     /**
@@ -108,17 +85,17 @@ public class Category implements Parcelable {
      * @param which The quiz to rate.
      * @param correctlySolved <code>true</code> if the quiz was solved else <code>false</code>.
      */
-    public void setScore(Quiz which, boolean correctlySolved) {
-        int index = mQuizzes.indexOf(which);
+    public void setScore(QuizQuestion which, boolean correctlySolved) {
+        int index = quizzes.indexOf(which);
         Log.d(TAG, "Setting score for " + which + " with index " + index);
         if (-1 == index) {
             return;
         }
-        mScores[index] = correctlySolved ? SCORE : NO_SCORE;
+        scores[index] = correctlySolved ? SCORE : NO_SCORE;
     }
 
-    public boolean isSolvedCorrectly(Quiz quiz) {
-        return getScore(quiz) == SCORE;
+    public boolean isSolvedCorrectly(QuizQuestion quizQuestion) {
+        return getScore(quizQuestion) == SCORE;
     }
 
     /**
@@ -127,10 +104,10 @@ public class Category implements Parcelable {
      * @param which The quiz to look for
      * @return The score if found, else 0.
      */
-    public int getScore(Quiz which) {
+    public int getScore(QuizQuestion which) {
         try {
-            return mScores[mQuizzes.indexOf(which)];
-        } catch (IndexOutOfBoundsException ioobe) {
+            return scores[quizzes.indexOf(which)];
+        } catch (IndexOutOfBoundsException ignore) {
             return 0;
         }
     }
@@ -140,22 +117,22 @@ public class Category implements Parcelable {
      */
     public int getScore() {
         int categoryScore = 0;
-        for (int quizScore : mScores) {
+        for (int quizScore : scores) {
             categoryScore += quizScore;
         }
         return categoryScore;
     }
 
     public int[] getScores() {
-        return mScores;
+        return scores;
     }
 
     public boolean isSolved() {
-        return mSolved;
+        return solved;
     }
 
     public void setSolved(boolean solved) {
-        this.mSolved = solved;
+        this.solved = solved;
     }
 
     /**
@@ -164,42 +141,27 @@ public class Category implements Parcelable {
      * @return The position of the first unsolved quiz.
      */
     public int getFirstUnsolvedQuizPosition() {
-        if (mQuizzes == null) {
+        if (quizzes == null) {
             return -1;
         }
-        for (int i = 0; i < mQuizzes.size(); i++) {
-            if (!mQuizzes.get(i).isSolved()) {
+        for (int i = 0; i < quizzes.size(); i++) {
+            if (!quizzes.get(i).isSolved()) {
                 return i;
             }
         }
-        return mQuizzes.size();
+        return quizzes.size();
     }
 
     @Override
     public String toString() {
         return "Category{" +
-                "mName='" + mName + '\'' +
-                ", mId='" + mId + '\'' +
-                ", mTheme=" + mTheme +
-                ", mQuizzes=" + mQuizzes +
-                ", mScores=" + Arrays.toString(mScores) +
-                ", mSolved=" + mSolved +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", theme=" + theme +
+                ", quizzes=" + quizzes +
+                ", scores=" + Arrays.toString(scores) +
+                ", solved=" + solved +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mName);
-        dest.writeString(mId);
-        dest.writeInt(mTheme.ordinal());
-        dest.writeTypedList(getQuizzes());
-        dest.writeIntArray(mScores);
-        ParcelableHelper.writeBoolean(dest, mSolved);
     }
 
     @SuppressWarnings("RedundantIfStatement")
@@ -214,16 +176,16 @@ public class Category implements Parcelable {
 
         Category category = (Category) o;
 
-        if (!mId.equals(category.mId)) {
+        if (!id.equals(category.id)) {
             return false;
         }
-        if (!mName.equals(category.mName)) {
+        if (!name.equals(category.name)) {
             return false;
         }
-        if (!mQuizzes.equals(category.mQuizzes)) {
+        if (!quizzes.equals(category.quizzes)) {
             return false;
         }
-        if (mTheme != category.mTheme) {
+        if (theme != category.theme) {
             return false;
         }
 
@@ -232,10 +194,11 @@ public class Category implements Parcelable {
 
     @Override
     public int hashCode() {
-        int result = mName.hashCode();
-        result = 31 * result + mId.hashCode();
-        result = 31 * result + mTheme.hashCode();
-        result = 31 * result + mQuizzes.hashCode();
+        int result = name.hashCode();
+        result = 31 * result + id.hashCode();
+        result = 31 * result + theme.hashCode();
+        result = 31 * result + quizzes.hashCode();
         return result;
     }
+
 }

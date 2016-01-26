@@ -25,13 +25,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.AlphaPickerQuiz;
+import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
 
 import java.util.Arrays;
 import java.util.List;
 
 @SuppressLint("ViewConstructor")
-public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuiz> {
+public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuizQuestion> {
 
     private static final String KEY_SELECTION = "SELECTION";
 
@@ -39,7 +39,7 @@ public class AlphaPickerQuizView extends AbsQuizView<AlphaPickerQuiz> {
     private SeekBar mSeekBar;
     private List<String> mAlphabet;
 
-    public AlphaPickerQuizView(Context context, Category category, AlphaPickerQuiz quiz) {
+    public AlphaPickerQuizView(Context context, Category category, AlphaPickerQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

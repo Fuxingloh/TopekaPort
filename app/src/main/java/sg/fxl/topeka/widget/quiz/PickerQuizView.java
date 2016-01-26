@@ -25,10 +25,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.PickerQuiz;
+import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
 
 @SuppressLint("ViewConstructor")
-public final class PickerQuizView extends AbsQuizView<PickerQuiz> {
+public final class PickerQuizView extends AbsQuizView<PickerQuizQuestion> {
 
     private static final String KEY_ANSWER = "ANSWER";
 
@@ -38,7 +38,7 @@ public final class PickerQuizView extends AbsQuizView<PickerQuiz> {
     private int mMin;
     private int mProgress;
 
-    public PickerQuizView(Context context, Category category, PickerQuiz quiz) {
+    public PickerQuizView(Context context, Category category, PickerQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

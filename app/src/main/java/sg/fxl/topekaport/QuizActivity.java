@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sg.fxl.topeka.activity;
+package sg.fxl.topekaport;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -47,15 +47,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.util.List;
+
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.helper.ViewUtils;
 import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.persistence.TopekaDatabaseHelper;
+import sg.fxl.topeka.model.CategoryJson;
 import sg.fxl.topeka.widget.TextSharedElementCallback;
-
-import java.util.List;
-
-import sg.fxl.topekaport.R;
 
 import static sg.fxl.topeka.adapter.CategoryAdapter.DRAWABLE;
 
@@ -64,7 +63,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String IMAGE_CATEGORY = "image_category_";
     private static final String STATE_IS_PLAYING = "isPlaying";
-    private static final String FRAGMENT_TAG = "Quiz";
+    private static final String FRAGMENT_TAG = "QuizQuestion";
 
     private Interpolator mInterpolator;
     private Category mCategory;
@@ -76,7 +75,6 @@ public class QuizActivity extends AppCompatActivity {
     private ObjectAnimator mColorChange;
     private CountingIdlingResource mCountingIdlingResource;
     private View mToolbarBack;
-
 
     final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
@@ -95,23 +93,24 @@ public class QuizActivity extends AppCompatActivity {
                     onBackPressed();
                     break;
                 default:
-                    throw new UnsupportedOperationException(
-                            "OnClick has not been implemented for " + getResources().
-                                    getResourceName(v.getId()));
+                    throw new UnsupportedOperationException("OnClick has not been implemented for " + getResources().getResourceName(v.getId()));
             }
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mCountingIdlingResource = new CountingIdlingResource("Quiz");
-        String categoryId = "knowledge";
+        mCountingIdlingResource = new CountingIdlingResource("QuizQuestion");
         mInterpolator = new FastOutSlowInInterpolator();
         if (null != savedInstanceState) {
             mSavedStateIsPlaying = savedInstanceState.getBoolean(STATE_IS_PLAYING);
         }
         super.onCreate(savedInstanceState);
-        populate(categoryId);
+        try {
+            populate(CategoryJson.from(getIntent()));
+        } catch (IOException exception) {
+            Log.e(TAG, exception.getMessage(), exception);
+        }
         int categoryNameTextSize = getResources()
                 .getDimensionPixelSize(R.dimen.category_item_text_size);
         int paddingStart = getResources().getDimensionPixelSize(R.dimen.spacing_double);
@@ -149,8 +148,7 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         if (mSavedStateIsPlaying) {
-            mQuizFragment = (QuizFragment) getSupportFragmentManager().findFragmentByTag(
-                    FRAGMENT_TAG);
+            mQuizFragment = (QuizFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (!mQuizFragment.hasSolvedStateListener()) {
                 mQuizFragment.setSolvedStateListener(getSolvedStateListener());
             }
@@ -225,8 +223,7 @@ public class QuizActivity extends AppCompatActivity {
         setToolbarElevation(false);
     }
 
-    private void revealFragmentContainer(final View clickedView,
-                                         final FrameLayout fragmentContainer) {
+    private void revealFragmentContainer(final View clickedView, final FrameLayout fragmentContainer) {
         if (ApiLevelHelper.isAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
             revealFragmentContainerLollipop(clickedView, fragmentContainer);
         } else {
@@ -237,8 +234,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void revealFragmentContainerLollipop(final View clickedView,
-                                                 final FrameLayout fragmentContainer) {
+    private void revealFragmentContainerLollipop(final View clickedView, final FrameLayout fragmentContainer) {
         prepareCircularReveal(clickedView, fragmentContainer);
 
         ViewCompat.animate(clickedView)
@@ -299,8 +295,7 @@ public class QuizActivity extends AppCompatActivity {
         if (mQuizFragment != null) {
             return;
         }
-        mQuizFragment = QuizFragment.newInstance(mCategory.getId(), getSolvedStateListener());
-        // the toolbar should not have more elevation than the content while playing
+        mQuizFragment = QuizFragment.newInstance(mCategory, getSolvedStateListener());
         setToolbarElevation(false);
     }
 
@@ -349,9 +344,10 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void setResultSolved() {
-        Intent categoryIntent = new Intent();
-        categoryIntent.putExtra("quiz", mCategory);
-        setResult(R.id.solved, categoryIntent);
+        // Send it through json with intent
+        Intent intent = new Intent();
+        CategoryJson.to(intent, mCategory);
+        setResult(R.id.solved, intent);
     }
 
     /**
@@ -379,12 +375,8 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NewApi")
-    private void populate(String categoryId) {
-        if (null == categoryId) {
-            Log.w(TAG, "Didn't find a category. Finishing");
-            finish();
-        }
-        mCategory = TopekaDatabaseHelper.getCategoryWith(this, categoryId);
+    private void populate(Category category) {
+        mCategory = category;
         setTheme(mCategory.getTheme().getStyleId());
         if (ApiLevelHelper.isAtLeast(Build.VERSION_CODES.LOLLIPOP)) {
             Window window = getWindow();

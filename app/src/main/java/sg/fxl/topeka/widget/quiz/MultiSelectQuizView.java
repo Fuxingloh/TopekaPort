@@ -28,16 +28,16 @@ import android.widget.ListView;
 import sg.fxl.topeka.adapter.OptionsQuizAdapter;
 import sg.fxl.topeka.helper.AnswerHelper;
 import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.MultiSelectQuiz;
+import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
 
 @SuppressLint("ViewConstructor")
-public class MultiSelectQuizView extends AbsQuizView<MultiSelectQuiz> {
+public class MultiSelectQuizView extends AbsQuizView<MultiSelectQuizQuestion> {
 
     private static final String KEY_ANSWER = "ANSWER";
 
     private ListView mListView;
 
-    public MultiSelectQuizView(Context context, Category category, MultiSelectQuiz quiz) {
+    public MultiSelectQuizView(Context context, Category category, MultiSelectQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

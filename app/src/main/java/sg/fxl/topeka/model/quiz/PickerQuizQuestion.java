@@ -16,29 +16,17 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
-
-@SuppressLint("ParcelCreator")
-public final class PickerQuiz extends Quiz<Integer> {
+public final class PickerQuizQuestion extends QuizQuestion<Integer> {
 
     private final int mMin;
     private final int mMax;
     private final int mStep;
 
-    public PickerQuiz(String question, Integer answer, int min, int max, int step, boolean solved) {
+    public PickerQuizQuestion(String question, Integer answer, int min, int max, int step, boolean solved) {
         super(question, answer, solved);
         mMin = min;
         mMax = max;
         mStep = step;
-    }
-
-    public PickerQuiz(Parcel in) {
-        super(in);
-        setAnswer(in.readInt());
-        mMin = in.readInt();
-        mMax = in.readInt();
-        mStep = in.readInt();
     }
 
     public int getMin() {
@@ -64,20 +52,11 @@ public final class PickerQuiz extends Quiz<Integer> {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(getAnswer());
-        dest.writeInt(mMin);
-        dest.writeInt(mMax);
-        dest.writeInt(mStep);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PickerQuiz)) {
+        if (!(o instanceof PickerQuizQuestion)) {
             return false;
         }
         //noinspection EqualsBetweenInconvertibleTypes
@@ -85,7 +64,7 @@ public final class PickerQuiz extends Quiz<Integer> {
             return false;
         }
 
-        PickerQuiz that = (PickerQuiz) o;
+        PickerQuizQuestion that = (PickerQuizQuestion) o;
 
         if (mMin != that.mMin) {
             return false;

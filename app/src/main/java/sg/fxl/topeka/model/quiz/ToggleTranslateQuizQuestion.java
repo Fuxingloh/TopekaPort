@@ -16,27 +16,16 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
+import java.util.Arrays;
 
 import sg.fxl.topeka.helper.AnswerHelper;
 
-import java.util.Arrays;
-
-@SuppressLint("ParcelCreator")
-public final class ToggleTranslateQuiz extends OptionsQuiz<String[]> {
+public final class ToggleTranslateQuizQuestion extends OptionsQuizQuestion<String[]> {
 
     private String[] mReadableOptions;
 
-    public ToggleTranslateQuiz(String question, int[] answer, String[][] options, boolean solved) {
+    public ToggleTranslateQuizQuestion(String question, int[] answer, String[][] options, boolean solved) {
         super(question, answer, options, solved);
-    }
-
-    @SuppressWarnings("unused")
-    public ToggleTranslateQuiz(Parcel in) {
-        super(in);
-        setAnswer(in.createIntArray());
-        setOptions((String[][]) in.readSerializable());
     }
 
     @Override
@@ -67,24 +56,17 @@ public final class ToggleTranslateQuiz extends OptionsQuiz<String[]> {
         return option[0] + " <> " + option[1];
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeIntArray(getAnswer());
-        dest.writeSerializable(getOptions());
-    }
-
     @SuppressWarnings("RedundantIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ToggleTranslateQuiz)) {
+        if (!(o instanceof ToggleTranslateQuizQuestion)) {
             return false;
         }
 
-        ToggleTranslateQuiz that = (ToggleTranslateQuiz) o;
+        ToggleTranslateQuizQuestion that = (ToggleTranslateQuizQuestion) o;
 
         if (!Arrays.equals(getAnswer(), that.getAnswer())) {
             return false;

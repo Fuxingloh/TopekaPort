@@ -16,36 +16,14 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.Arrays;
 
 import sg.fxl.topeka.helper.AnswerHelper;
 
-import java.util.Arrays;
+public final class FourQuarterQuizQuestion extends OptionsQuizQuestion<String> {
 
-public final class FourQuarterQuiz extends OptionsQuiz<String> {
-
-    public static final Parcelable.Creator<FourQuarterQuiz> CREATOR
-            = new Parcelable.Creator<FourQuarterQuiz>() {
-        @Override
-        public FourQuarterQuiz createFromParcel(Parcel in) {
-            return new FourQuarterQuiz(in);
-        }
-
-        @Override
-        public FourQuarterQuiz[] newArray(int size) {
-            return new FourQuarterQuiz[size];
-        }
-    };
-
-    public FourQuarterQuiz(String question, int[] answer, String[] options, boolean solved) {
+    public FourQuarterQuizQuestion(String question, int[] answer, String[] options, boolean solved) {
         super(question, answer, options, solved);
-    }
-
-    public FourQuarterQuiz(Parcel in) {
-        super(in);
-        String options[] = in.createStringArray();
-        setOptions(options);
     }
 
     @Override
@@ -59,27 +37,15 @@ public final class FourQuarterQuiz extends OptionsQuiz<String> {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        String[] options = getOptions();
-        dest.writeStringArray(options);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FourQuarterQuiz)) {
+        if (!(o instanceof FourQuarterQuizQuestion)) {
             return false;
         }
 
-        FourQuarterQuiz quiz = (FourQuarterQuiz) o;
+        FourQuarterQuizQuestion quiz = (FourQuarterQuizQuestion) o;
         final int[] answer = getAnswer();
         final String question = getQuestion();
         if (answer != null ? !Arrays.equals(answer, quiz.getAnswer()) : quiz.getAnswer() != null) {

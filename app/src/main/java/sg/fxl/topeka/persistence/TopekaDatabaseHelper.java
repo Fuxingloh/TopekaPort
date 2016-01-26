@@ -25,21 +25,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.helper.JsonHelper;
-import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.JsonAttributes;
-import sg.fxl.topeka.model.Theme;
-import sg.fxl.topeka.model.quiz.AlphaPickerQuiz;
-import sg.fxl.topeka.model.quiz.FillBlankQuiz;
-import sg.fxl.topeka.model.quiz.FillTwoBlanksQuiz;
-import sg.fxl.topeka.model.quiz.FourQuarterQuiz;
-import sg.fxl.topeka.model.quiz.MultiSelectQuiz;
-import sg.fxl.topeka.model.quiz.PickerQuiz;
-import sg.fxl.topeka.model.quiz.Quiz;
-import sg.fxl.topeka.model.quiz.SelectItemQuiz;
-import sg.fxl.topeka.model.quiz.ToggleTranslateQuiz;
-import sg.fxl.topeka.model.quiz.TrueFalseQuiz;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +36,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import sg.fxl.topeka.helper.JsonHelper;
+import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.JsonAttributes;
+import sg.fxl.topeka.model.Theme;
+import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
+import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
+import sg.fxl.topeka.model.quiz.FillTwoBlanksQuizQuestion;
+import sg.fxl.topeka.model.quiz.FourQuarterQuizQuestion;
+import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
+import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
+import sg.fxl.topeka.model.quiz.QuizQuestion;
+import sg.fxl.topeka.model.quiz.SelectItemQuizQuestion;
+import sg.fxl.topeka.model.quiz.ToggleTranslateQuizQuestion;
+import sg.fxl.topeka.model.quiz.TrueFalseQuizQuestion;
+import sg.fxl.topekaport.R;
 
 /**
  * Database for storing and retrieving info for categories and quizzes
@@ -136,7 +137,7 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
         final boolean solved = getBooleanFromDatabase(isSolved);
         final int[] scores = JsonHelper.jsonArrayToIntArray(cursor.getString(4));
 
-        final List<Quiz> quizzes = getQuizzes(id, readableDatabase);
+        final List<QuizQuestion> quizzes = getQuizzes(id, readableDatabase);
         return new Category(name, id, theme, quizzes, scores, solved);
     }
 
@@ -193,7 +194,7 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
         ContentValues categoryValues = createContentValuesFor(category);
         writableDatabase.update(CategoryTable.NAME, categoryValues, CategoryTable.COLUMN_ID + "=?",
                 new String[]{category.getId()});
-        final List<Quiz> quizzes = category.getQuizzes();
+        final List<QuizQuestion> quizzes = category.getQuizzes();
         updateQuizzes(writableDatabase, quizzes);
     }
 
@@ -203,16 +204,16 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
      * @param writableDatabase The database to write the quizzes to.
      * @param quizzes The quizzes to write.
      */
-    private static void updateQuizzes(SQLiteDatabase writableDatabase, List<Quiz> quizzes) {
-        Quiz quiz;
+    private static void updateQuizzes(SQLiteDatabase writableDatabase, List<QuizQuestion> quizzes) {
+        QuizQuestion quizQuestion;
         ContentValues quizValues = new ContentValues();
         String[] quizArgs = new String[1];
         for (int i = 0; i < quizzes.size(); i++) {
-            quiz = quizzes.get(i);
+            quizQuestion = quizzes.get(i);
             quizValues.clear();
-            quizValues.put(QuizTable.COLUMN_SOLVED, quiz.isSolved());
+            quizValues.put(QuizTable.COLUMN_SOLVED, quizQuestion.isSolved());
 
-            quizArgs[0] = quiz.getQuestion();
+            quizArgs[0] = quizQuestion.getQuestion();
             writableDatabase.update(QuizTable.NAME, quizValues, QuizTable.COLUMN_QUESTION + "=?",
                     quizArgs);
         }
@@ -237,10 +238,9 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
      * @param database The database containing the quizzes.
      * @return The found quizzes or an empty list if none were available.
      */
-    private static List<Quiz> getQuizzes(final String categoryId, SQLiteDatabase database) {
-        final List<Quiz> quizzes = new ArrayList<>();
-        final Cursor cursor = database.query(QuizTable.NAME, QuizTable.PROJECTION,
-                QuizTable.FK_CATEGORY + " LIKE ?", new String[]{categoryId}, null, null, null);
+    private static List<QuizQuestion> getQuizzes(final String categoryId, SQLiteDatabase database) {
+        final List<QuizQuestion> quizzes = new ArrayList<>();
+        final Cursor cursor = database.query(QuizTable.NAME, QuizTable.PROJECTION, QuizTable.FK_CATEGORY + " LIKE ?", new String[]{categoryId}, null, null, null);
         cursor.moveToFirst();
         do {
             quizzes.add(createQuizDueToType(cursor));
@@ -256,7 +256,7 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
      * @param cursor The Cursor containing the data.
      * @return The created quiz.
      */
-    private static Quiz createQuizDueToType(Cursor cursor) {
+    private static QuizQuestion createQuizDueToType(Cursor cursor) {
         // "magic numbers" based on QuizTable#PROJECTION
         final String type = cursor.getString(2);
         final String question = cursor.getString(3);
@@ -269,7 +269,7 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
 
         switch (type) {
             case JsonAttributes.QuizType.ALPHA_PICKER: {
-                return new AlphaPickerQuiz(question, answer, solved);
+                return new AlphaPickerQuizQuestion(question, answer, solved);
             }
             case JsonAttributes.QuizType.FILL_BLANK: {
                 return createFillBlankQuiz(cursor, question, answer, solved);
@@ -284,7 +284,7 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
                 return createMultiSelectQuiz(question, answer, options, solved);
             }
             case JsonAttributes.QuizType.PICKER: {
-                return new PickerQuiz(question, Integer.valueOf(answer), min, max, step, solved);
+                return new PickerQuizQuestion(question, Integer.valueOf(answer), min, max, step, solved);
             }
             case JsonAttributes.QuizType.SINGLE_SELECT:
                 //fall-through intended
@@ -299,58 +299,58 @@ public class TopekaDatabaseHelper extends SQLiteOpenHelper {
 
             }
             default: {
-                throw new IllegalArgumentException("Quiz type " + type + " is not supported");
+                throw new IllegalArgumentException("QuizQuestion type " + type + " is not supported");
             }
         }
     }
 
-    private static Quiz createFillBlankQuiz(Cursor cursor, String question,
+    private static QuizQuestion createFillBlankQuiz(Cursor cursor, String question,
                                             String answer, boolean solved) {
         final String start = cursor.getString(9);
         final String end = cursor.getString(10);
-        return new FillBlankQuiz(question, answer, start, end, solved);
+        return new FillBlankQuizQuestion(question, answer, start, end, solved);
     }
 
-    private static Quiz createFillTwoBlanksQuiz(String question, String answer, boolean solved) {
+    private static QuizQuestion createFillTwoBlanksQuiz(String question, String answer, boolean solved) {
         final String[] answerArray = JsonHelper.jsonArrayToStringArray(answer);
-        return new FillTwoBlanksQuiz(question, answerArray, solved);
+        return new FillTwoBlanksQuizQuestion(question, answerArray, solved);
     }
 
-    private static Quiz createFourQuarterQuiz(String question, String answer,
+    private static QuizQuestion createFourQuarterQuiz(String question, String answer,
                                               String options, boolean solved) {
         final int[] answerArray = JsonHelper.jsonArrayToIntArray(answer);
         final String[] optionsArray = JsonHelper.jsonArrayToStringArray(options);
-        return new FourQuarterQuiz(question, answerArray, optionsArray, solved);
+        return new FourQuarterQuizQuestion(question, answerArray, optionsArray, solved);
     }
 
-    private static Quiz createMultiSelectQuiz(String question, String answer,
+    private static QuizQuestion createMultiSelectQuiz(String question, String answer,
                                               String options, boolean solved) {
         final int[] answerArray = JsonHelper.jsonArrayToIntArray(answer);
         final String[] optionsArray = JsonHelper.jsonArrayToStringArray(options);
-        return new MultiSelectQuiz(question, answerArray, optionsArray, solved);
+        return new MultiSelectQuizQuestion(question, answerArray, optionsArray, solved);
     }
 
-    private static Quiz createSelectItemQuiz(String question, String answer,
+    private static QuizQuestion createSelectItemQuiz(String question, String answer,
                                              String options, boolean solved) {
         final int[] answerArray = JsonHelper.jsonArrayToIntArray(answer);
         final String[] optionsArray = JsonHelper.jsonArrayToStringArray(options);
-        return new SelectItemQuiz(question, answerArray, optionsArray, solved);
+        return new SelectItemQuizQuestion(question, answerArray, optionsArray, solved);
     }
 
-    private static Quiz createToggleTranslateQuiz(String question, String answer,
+    private static QuizQuestion createToggleTranslateQuiz(String question, String answer,
                                                   String options, boolean solved) {
         final int[] answerArray = JsonHelper.jsonArrayToIntArray(answer);
         final String[][] optionsArrays = extractOptionsArrays(options);
-        return new ToggleTranslateQuiz(question, answerArray, optionsArrays, solved);
+        return new ToggleTranslateQuizQuestion(question, answerArray, optionsArrays, solved);
     }
 
-    private static Quiz createTrueFalseQuiz(String question, String answer, boolean solved) {
+    private static QuizQuestion createTrueFalseQuiz(String question, String answer, boolean solved) {
     /*
      * parsing json with the potential values "true" and "false"
      * see res/raw/categories.json for reference
      */
         final boolean answerValue = "true".equals(answer);
-        return new TrueFalseQuiz(question, answerValue, solved);
+        return new TrueFalseQuizQuestion(question, answerValue, solved);
     }
 
     private static String[][] extractOptionsArrays(String options) {

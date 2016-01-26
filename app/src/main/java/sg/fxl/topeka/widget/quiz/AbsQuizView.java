@@ -40,15 +40,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.activity.QuizActivity;
+import sg.fxl.topeka.model.quiz.QuizQuestion;
+import sg.fxl.topekaport.R; import sg.fxl.topekaport.QuizActivity;
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.helper.ViewUtils;
 import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.Quiz;
 import sg.fxl.topeka.widget.fab.CheckableFab;
 
 /**
- * This is the base class for displaying a {@link sg.fxl.topeka.model.quiz.Quiz}.
+ * This is the base class for displaying a {@link QuizQuestion}.
  * <p>
  * Subclasses need to implement {@link AbsQuizView#createQuizContentView()}
  * in order to allow solution of a quiz.
@@ -58,10 +58,10 @@ import sg.fxl.topeka.widget.fab.CheckableFab;
  * <code>true</code> in order to mark the quiz solved.
  * </p>
  *
- * @param <Q> The type of {@link sg.fxl.topeka.model.quiz.Quiz} you want to
+ * @param <Q> The type of {@link QuizQuestion} you want to
  * display.
  */
-public abstract class AbsQuizView<Q extends Quiz> extends FrameLayout {
+public abstract class AbsQuizView<Q extends QuizQuestion> extends FrameLayout {
 
     private static final int ANSWER_HIDE_DELAY = 500;
     private static final int FOREGROUND_COLOR_CHANGE_DELAY = 750;
@@ -83,7 +83,7 @@ public abstract class AbsQuizView<Q extends Quiz> extends FrameLayout {
      *
      * @param context The context for this view.
      * @param category The {@link Category} this view is running in.
-     * @param quiz The actual {@link Quiz} that is going to be displayed.
+     * @param quiz The actual {@link QuizQuestion} that is going to be displayed.
      */
     public AbsQuizView(Context context, Category category, Q quiz) {
         super(context);
@@ -197,7 +197,7 @@ public abstract class AbsQuizView<Q extends Quiz> extends FrameLayout {
 
     /**
      * Implementations should create the content view for the type of
-     * {@link sg.fxl.topeka.model.quiz.Quiz} they want to display.
+     * {@link QuizQuestion} they want to display.
      *
      * @return the created view to solve the quiz.
      */

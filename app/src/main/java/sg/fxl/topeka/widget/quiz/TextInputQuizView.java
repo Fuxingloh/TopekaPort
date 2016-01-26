@@ -27,10 +27,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.Quiz;
 
-public abstract class TextInputQuizView<Q extends Quiz> extends AbsQuizView<Q>
+public abstract class TextInputQuizView<Q extends QuizQuestion> extends AbsQuizView<Q>
         implements TextWatcher, TextView.OnEditorActionListener {
 
     public TextInputQuizView(Context context, Category category, Q quiz) {

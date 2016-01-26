@@ -44,7 +44,7 @@
             android:orientation="vertical">
 
         <TextView
-                android:id="@+id/quiz"
+                android:id="@+id/quizQuestion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Topeka.TextAppearance.ListItem"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sg.fxl.topeka.activity;
+package sg.fxl.topekaport;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -31,20 +31,20 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.adapter.QuizAdapter;
+import java.util.List;
+
+import sg.fxl.topeka.adapter.QuizAdapter;
 import sg.fxl.topeka.adapter.ScoreAdapter;
 import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.model.Category;
 import sg.fxl.topeka.model.Theme;
-import sg.fxl.topeka.model.quiz.Quiz;
+import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topeka.persistence.TopekaDatabaseHelper;
 import sg.fxl.topeka.widget.AvatarView;
 import sg.fxl.topeka.widget.quiz.AbsQuizView;
 
-import java.util.List;
-
 /**
- * Encapsulates Quiz solving and displays it to the user.
+ * Encapsulates QuizQuestion solving and displays it to the user.
  */
 public class QuizFragment extends android.support.v4.app.Fragment {
 
@@ -58,31 +58,20 @@ public class QuizFragment extends android.support.v4.app.Fragment {
     private QuizAdapter mQuizAdapter;
     private SolvedStateListener mSolvedStateListener;
 
-    public static QuizFragment newInstance(String categoryId,
-                                           SolvedStateListener solvedStateListener) {
-        if (categoryId == null) {
+    public static QuizFragment newInstance(Category category, SolvedStateListener solvedStateListener) {
+        if (category == null) {
             throw new IllegalArgumentException("The category can not be null");
         }
-        Bundle args = new Bundle();
-        args.putString(Category.TAG, categoryId);
         QuizFragment fragment = new QuizFragment();
         if (solvedStateListener != null) {
             fragment.mSolvedStateListener = solvedStateListener;
         }
-        fragment.setArguments(args);
+        fragment.mCategory = category;
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        String categoryId = getArguments().getString(Category.TAG);
-        mCategory = TopekaDatabaseHelper.getCategoryWith(getActivity(), categoryId);
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Create a themed Context and custom LayoutInflater
         // to get nicely themed views in this Fragment.
         final Theme theme = mCategory.getTheme();
@@ -114,7 +103,7 @@ public class QuizFragment extends android.support.v4.app.Fragment {
 
     private void initProgressToolbar(View view) {
         final int firstUnsolvedQuizPosition = mCategory.getFirstUnsolvedQuizPosition();
-        final List<Quiz> quizzes = mCategory.getQuizzes();
+        final List<QuizQuestion> quizzes = mCategory.getQuizzes();
         mQuizSize = quizzes.size();
         mProgressText = (TextView) view.findViewById(R.id.progress_text);
         mProgressBar = ((ProgressBar) view.findViewById(R.id.progress));
@@ -242,6 +231,7 @@ public class QuizFragment extends android.support.v4.app.Fragment {
     public boolean hasSolvedStateListener() {
         return mSolvedStateListener != null;
     }
+
     public void setSolvedStateListener(SolvedStateListener solvedStateListener) {
         mSolvedStateListener = solvedStateListener;
         if (mCategory.isSolved() && null != mSolvedStateListener) {

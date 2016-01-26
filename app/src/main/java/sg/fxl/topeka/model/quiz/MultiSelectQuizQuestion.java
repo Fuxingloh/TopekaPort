@@ -16,35 +16,23 @@
 
 package sg.fxl.topeka.model.quiz;
 
-import android.annotation.SuppressLint;
-import android.os.Parcel;
 
-@SuppressLint("ParcelCreator")
-public final class AlphaPickerQuiz extends Quiz<String> {
+import sg.fxl.topeka.helper.AnswerHelper;
 
-    public AlphaPickerQuiz(String question, String answer, boolean solved) {
-        super(question, answer, solved);
-    }
+public final class MultiSelectQuizQuestion extends OptionsQuizQuestion<String> {
 
-    @SuppressWarnings("unused")
-    public AlphaPickerQuiz(Parcel in) {
-        super(in);
-        setAnswer(in.readString());
+    public MultiSelectQuizQuestion(String question, int[] answer, String[] options, boolean solved) {
+        super(question, answer, options, solved);
     }
 
     @Override
     public QuizType getType() {
-        return QuizType.ALPHA_PICKER;
+        return QuizType.MULTI_SELECT;
     }
 
     @Override
     public String getStringAnswer() {
-        return getAnswer();
+        return AnswerHelper.getAnswer(getAnswer(), getOptions());
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(getAnswer());
-    }
 }

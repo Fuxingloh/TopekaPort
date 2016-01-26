@@ -24,11 +24,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import sg.fxl.topeka.model.quiz.TrueFalseQuizQuestion;
 import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.TrueFalseQuiz;
 
 @SuppressLint("ViewConstructor")
-public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuiz> {
+public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuizQuestion> {
 
     private static final String KEY_SELECTION = "SELECTION";
     private static final LinearLayout.LayoutParams LAYOUT_PARAMS =
@@ -42,7 +42,7 @@ public class TrueFalseQuizView extends AbsQuizView<TrueFalseQuiz> {
     private View mAnswerTrue;
     private View mAnswerFalse;
 
-    public TrueFalseQuizView(Context context, Category category, TrueFalseQuiz quiz) {
+    public TrueFalseQuizView(Context context, Category category, TrueFalseQuizQuestion quiz) {
         super(context, category, quiz);
     }
 

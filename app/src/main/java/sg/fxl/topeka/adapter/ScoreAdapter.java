@@ -30,10 +30,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import sg.fxl.topekaport.R; import sg.fxl.topeka.model.Category;
-import sg.fxl.topeka.model.quiz.Quiz;
-
 import java.util.List;
+
+import sg.fxl.topeka.model.Category;
+import sg.fxl.topeka.model.quiz.QuizQuestion;
+import sg.fxl.topekaport.R;
 
 /**
  * Adapter for displaying score cards.
@@ -42,15 +43,15 @@ public class ScoreAdapter extends BaseAdapter {
 
     private final Category mCategory;
     private final int count;
-    private final List<Quiz> mQuizList;
+    private final List<QuizQuestion> mQuizQuestionList;
 
     private Drawable mSuccessIcon;
     private Drawable mFailedIcon;
 
     public ScoreAdapter(Category category) {
         mCategory = category;
-        mQuizList = mCategory.getQuizzes();
-        count = mQuizList.size();
+        mQuizQuestionList = mCategory.getQuizzes();
+        count = mQuizQuestionList.size();
     }
 
     @Override
@@ -59,8 +60,8 @@ public class ScoreAdapter extends BaseAdapter {
     }
 
     @Override
-    public Quiz getItem(int position) {
-        return mQuizList.get(position);
+    public QuizQuestion getItem(int position) {
+        return mQuizQuestionList.get(position);
     }
 
     @Override
@@ -77,10 +78,10 @@ public class ScoreAdapter extends BaseAdapter {
             convertView = createView(parent);
         }
 
-        final Quiz quiz = getItem(position);
+        final QuizQuestion quizQuestion = getItem(position);
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-        viewHolder.mQuizView.setText(quiz.getQuestion());
-        viewHolder.mAnswerView.setText(quiz.getStringAnswer());
+        viewHolder.mQuizView.setText(quizQuestion.getQuestion());
+        viewHolder.mAnswerView.setText(quizQuestion.getStringAnswer());
         setSolvedStateForQuiz(viewHolder.mSolvedState, position);
         return convertView;
     }
@@ -147,7 +148,7 @@ public class ScoreAdapter extends BaseAdapter {
         final ImageView mSolvedState;
 
         public ViewHolder(ViewGroup scorecardItem) {
-            mQuizView = (TextView) scorecardItem.findViewById(R.id.quiz);
+            mQuizView = (TextView) scorecardItem.findViewById(R.id.quizQuestion);
             mAnswerView = (TextView) scorecardItem.findViewById(R.id.answer);
             mSolvedState = (ImageView) scorecardItem.findViewById(R.id.solved_state);
         }
