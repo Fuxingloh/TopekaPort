@@ -50,6 +50,7 @@ import sg.fxl.topeka.helper.ApiLevelHelper;
 import sg.fxl.topeka.helper.ViewUtils;
 import sg.fxl.topeka.model.CategoryJson;
 import sg.fxl.topeka.model.Quiz;
+import sg.fxl.topeka.widget.OnActivityResult;
 import sg.fxl.topeka.widget.TextSharedElementCallback;
 
 public class QuizActivity extends AppCompatActivity {
@@ -425,6 +426,20 @@ public class QuizActivity extends AppCompatActivity {
         if (savedStateIsPlaying) {
             // the toolbar should not have more elevation than the content while playing
             setToolbarElevation(false);
+        }
+    }
+
+    private OnActivityResult onActivityResult;
+
+    public void registerOnActivityResult(OnActivityResult onActivityResult){
+        this.onActivityResult = onActivityResult;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (onActivityResult != null){
+            onActivityResult.onActivityResult(requestCode, resultCode, data);
+            onActivityResult = null;
         }
     }
 }

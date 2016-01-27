@@ -6,6 +6,7 @@ import java.util.List;
 import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.Theme;
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
+import sg.fxl.topeka.model.quiz.ImageQuizQuestion;
 import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
 import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
@@ -53,6 +54,11 @@ public class QuizBuilder {
 
     public QuizBuilder addPickerQuestion(String title, Integer answer, int min, int max, int steps){
         this.quizQuestionList.add(new PickerQuizQuestion(title, answer, min, max, steps, false));
+        return this;
+    }
+
+    public QuizBuilder addImageQuestion(String title){
+        this.quizQuestionList.add(new ImageQuizQuestion(title, null, false));
         return this;
     }
 

@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         quiz = new QuizBuilder()
                 .name("Sample Quiz")
                 .theme(Theme.yellow)
+                .addImageQuestion("Take a image of a something.")
                 .addSelectQuestion("Sample Questions 1", new int[]{0}, new String[]{"Option 1", "Option 2", "Option 3", "Option 4"})
                 .addFillBlankQuestion("Sample Questions 2", "Answer")
                 .addPickerQuestion("Sample Question 3", 5, 1, 10, 1)

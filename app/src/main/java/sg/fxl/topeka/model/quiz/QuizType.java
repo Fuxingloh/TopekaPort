@@ -30,6 +30,7 @@ public enum QuizType {
     SINGLE_SELECT(Names.SINGLE_SELECT, SelectItemQuizQuestion.class),
     SINGLE_SELECT_ITEM(Names.SINGLE_SELECT_ITEM, SelectItemQuizQuestion.class),
     TOGGLE_TRANSLATE(Names.TOGGLE_TRANSLATE, ToggleTranslateQuizQuestion.class),
+    IMAGE(Names.IMAGE, ImageQuizQuestion.class),
     TRUE_FALSE(Names.TRUE_FALSE, TrueFalseQuizQuestion.class);
 
     private final String jsonName;
@@ -55,7 +56,6 @@ public enum QuizType {
      * Project: Topeka Port
      */
     public interface Names {
-
         String ALPHA_PICKER = "alpha-picker";
         String FILL_BLANK = "fill-blank";
         String FILL_TWO_BLANKS = "fill-two-blanks";
@@ -66,5 +66,6 @@ public enum QuizType {
         String SINGLE_SELECT_ITEM = "single-select-item";
         String TOGGLE_TRANSLATE = "toggle-translate";
         String TRUE_FALSE = "true-false";
+        String IMAGE = "image";
     }
 }

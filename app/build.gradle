@@ -65,5 +65,4 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
     compile 'com.google.code.gson:gson:2.5'
     compile 'org.apache.commons:commons-lang3:3.4'
-
 }

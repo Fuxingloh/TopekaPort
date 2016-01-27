@@ -31,6 +31,7 @@ import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillTwoBlanksQuizQuestion;
 import sg.fxl.topeka.model.quiz.FourQuarterQuizQuestion;
+import sg.fxl.topeka.model.quiz.ImageQuizQuestion;
 import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
 import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
@@ -42,6 +43,7 @@ import sg.fxl.topeka.widget.quiz.AlphaPickerQuizView;
 import sg.fxl.topeka.widget.quiz.FillBlankQuizView;
 import sg.fxl.topeka.widget.quiz.FillTwoBlanksQuizView;
 import sg.fxl.topeka.widget.quiz.FourQuarterQuizView;
+import sg.fxl.topeka.widget.quiz.ImageQuizView;
 import sg.fxl.topeka.widget.quiz.MultiSelectQuizView;
 import sg.fxl.topeka.widget.quiz.PickerQuizView;
 import sg.fxl.topeka.widget.quiz.SelectItemQuizView;
@@ -148,10 +150,11 @@ public class QuizAdapter extends BaseAdapter {
             case SINGLE_SELECT_ITEM:
                 return new SelectItemQuizView(context, quiz, (SelectItemQuizQuestion) quizQuestion);
             case TOGGLE_TRANSLATE:
-                return new ToggleTranslateQuizView(context, quiz,
-                        (ToggleTranslateQuizQuestion) quizQuestion);
+                return new ToggleTranslateQuizView(context, quiz, (ToggleTranslateQuizQuestion) quizQuestion);
             case TRUE_FALSE:
                 return new TrueFalseQuizView(context, quiz, (TrueFalseQuizQuestion) quizQuestion);
+            case IMAGE:
+                return new ImageQuizView(context, quiz, (ImageQuizQuestion) quizQuestion);
         }
         throw new UnsupportedOperationException(
                 "QuizQuestion of type " + quizQuestion.getType() + " can not be displayed.");
