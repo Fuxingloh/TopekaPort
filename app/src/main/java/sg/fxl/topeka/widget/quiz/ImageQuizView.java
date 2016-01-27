@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -73,6 +74,7 @@ public class ImageQuizView extends AbsQuizView<ImageQuizQuestion> implements OnA
         ViewGroup view = (ViewGroup) getLayoutInflater().inflate(R.layout.quiz_button_image, this, false);
         button = (Button) view.findViewById(R.id.button);
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        imageView.setVisibility(GONE);
         button.setText("Take Picture");
         button.setOnClickListener(new OnClickListener() {
             @Override
@@ -128,12 +130,13 @@ public class ImageQuizView extends AbsQuizView<ImageQuizQuestion> implements OnA
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            button.setVisibility(View.GONE);
+            button.setVisibility(GONE);
+            imageView.setVisibility(VISIBLE);
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getPath(), options);
-            imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 500, 500, false));
+            imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bitmap, 500, 500));
             allowAnswer();
         }
     }

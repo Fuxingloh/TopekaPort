@@ -11,6 +11,7 @@ import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
 import sg.fxl.topeka.model.quiz.PickerQuizQuestion;
 import sg.fxl.topeka.model.quiz.QuizQuestion;
 import sg.fxl.topeka.model.quiz.SelectItemQuizQuestion;
+import sg.fxl.topeka.model.quiz.VideoQuizQuestion;
 
 /**
  * Created by: Fuxing
@@ -58,7 +59,12 @@ public class QuizBuilder {
     }
 
     public QuizBuilder addImageQuestion(String title){
-        this.quizQuestionList.add(new ImageQuizQuestion(title, null, false));
+        this.quizQuestionList.add(new ImageQuizQuestion(title, false));
+        return this;
+    }
+
+    public QuizBuilder addVideoQuestion(String title){
+        this.quizQuestionList.add(new VideoQuizQuestion(title, false));
         return this;
     }
 

@@ -16,20 +16,20 @@
 
 package sg.fxl.topeka.model.quiz;
 
-public final class ImageQuizQuestion extends QuizQuestion<String> {
+public final class VideoQuizQuestion extends QuizQuestion<String> {
 
-    public ImageQuizQuestion(String question, boolean solved) {
-        super(question, "Image", solved);
+    public VideoQuizQuestion(String question, boolean solved) {
+        super(question, "Video", solved);
     }
 
     @Override
     public String getStringAnswer() {
-        return (getAnswer() == null ? "Null" : "Image");
+        return (getAnswer() == null ? "Null" : "Video");
     }
 
     @Override
     public QuizType getType() {
-        return QuizType.IMAGE;
+        return QuizType.VIDEO;
     }
 
     @Override

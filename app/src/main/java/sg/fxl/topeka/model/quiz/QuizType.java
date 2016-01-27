@@ -30,8 +30,9 @@ public enum QuizType {
     SINGLE_SELECT(Names.SINGLE_SELECT, SelectItemQuizQuestion.class),
     SINGLE_SELECT_ITEM(Names.SINGLE_SELECT_ITEM, SelectItemQuizQuestion.class),
     TOGGLE_TRANSLATE(Names.TOGGLE_TRANSLATE, ToggleTranslateQuizQuestion.class),
+    TRUE_FALSE(Names.TRUE_FALSE, TrueFalseQuizQuestion.class),
     IMAGE(Names.IMAGE, ImageQuizQuestion.class),
-    TRUE_FALSE(Names.TRUE_FALSE, TrueFalseQuizQuestion.class);
+    VIDEO(Names.VIDEO, VideoQuizQuestion.class),;
 
     private final String jsonName;
     private final Class<? extends QuizQuestion> type;
@@ -67,5 +68,6 @@ public enum QuizType {
         String TOGGLE_TRANSLATE = "toggle-translate";
         String TRUE_FALSE = "true-false";
         String IMAGE = "image";
+        String VIDEO = "video";
     }
 }
