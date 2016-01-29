@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         // Create Quiz Question & Quiz
         quiz = new QuizBuilder()
                 .name("Sample Quiz")
-                .theme(Theme.yellow)
+                .theme(Theme.blue)
+                .addAudioQuestion("Record a audio of yourself talking.")
                 .addVideoQuestion("Record a video of something.")
                 .addImageQuestion("Take a image of a something.")
                 .addSelectQuestion("Sample Questions 1", new int[]{0}, new String[]{"Option 1", "Option 2", "Option 3", "Option 4"})

@@ -5,6 +5,7 @@ import java.util.List;
 
 import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.Theme;
+import sg.fxl.topeka.model.quiz.AudioQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
 import sg.fxl.topeka.model.quiz.ImageQuizQuestion;
 import sg.fxl.topeka.model.quiz.MultiSelectQuizQuestion;
@@ -65,6 +66,11 @@ public class QuizBuilder {
 
     public QuizBuilder addVideoQuestion(String title){
         this.quizQuestionList.add(new VideoQuizQuestion(title, false));
+        return this;
+    }
+
+    public QuizBuilder addAudioQuestion(String title){
+        this.quizQuestionList.add(new AudioQuizQuestion(title, false));
         return this;
     }
 

@@ -28,6 +28,7 @@ import java.util.Set;
 
 import sg.fxl.topeka.model.Quiz;
 import sg.fxl.topeka.model.quiz.AlphaPickerQuizQuestion;
+import sg.fxl.topeka.model.quiz.AudioQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillBlankQuizQuestion;
 import sg.fxl.topeka.model.quiz.FillTwoBlanksQuizQuestion;
 import sg.fxl.topeka.model.quiz.FourQuarterQuizQuestion;
@@ -41,6 +42,7 @@ import sg.fxl.topeka.model.quiz.TrueFalseQuizQuestion;
 import sg.fxl.topeka.model.quiz.VideoQuizQuestion;
 import sg.fxl.topeka.widget.quiz.AbsQuizView;
 import sg.fxl.topeka.widget.quiz.AlphaPickerQuizView;
+import sg.fxl.topeka.widget.quiz.AudioQuizView;
 import sg.fxl.topeka.widget.quiz.FillBlankQuizView;
 import sg.fxl.topeka.widget.quiz.FillTwoBlanksQuizView;
 import sg.fxl.topeka.widget.quiz.FourQuarterQuizView;
@@ -159,6 +161,8 @@ public class QuizAdapter extends BaseAdapter {
                 return new ImageQuizView(context, quiz, (ImageQuizQuestion) quizQuestion);
             case VIDEO:
                 return new VideoQuizView(context, quiz, (VideoQuizQuestion) quizQuestion);
+            case AUDIO:
+                return new AudioQuizView(context, quiz, (AudioQuizQuestion) quizQuestion);
         }
         throw new UnsupportedOperationException(
                 "QuizQuestion of type " + quizQuestion.getType() + " can not be displayed.");
